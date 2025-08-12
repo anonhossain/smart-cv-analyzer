@@ -3,6 +3,7 @@ from pyexpat import model
 from typing import List
 from fastapi import APIRouter, File, Form, UploadFile
 from fastapi.responses import JSONResponse
+from resume_extractor import ResumeExtractor
 from clear_files import clear_all_uploads
 from file_uploader import save_candidate_files, save_hr_files
 
@@ -28,7 +29,7 @@ async def hr_upload(pdf_files: List[UploadFile] = File(...), jd_text: str = Form
     try:
         # Call the save_hr_files function to save the uploaded files
         response = await save_hr_files(pdf_files, jd_text)
-        return JSONResponse(content={"message": "HR files uploaded successfully", "pdf_files": response['pdf_files']}, status_code=200)
+        return JSONResponse(content={"message": "HR CV and JD uploaded successfully", "pdf_files": response['pdf_files']}, status_code=200)
     except Exception as e:
         return JSONResponse(content={"message": "Error uploading HR files", "error": str(e)}, status_code=500)    
 
@@ -36,3 +37,12 @@ async def hr_upload(pdf_files: List[UploadFile] = File(...), jd_text: str = Form
 def clear_uploads():
     result = clear_all_uploads()
     return JSONResponse(content=result)
+
+@api.post("/extract_resume_info/")
+async def get_resume_info():
+    result = ResumeExtractor.extract_resume_info()
+    return result
+
+@api.post("/get_excel_columns/")
+async def get_excel_columns(file: UploadFile = File(...)):
+    return await ResumeExtractor.get_excel_columns(file)
