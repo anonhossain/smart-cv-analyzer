@@ -6,7 +6,7 @@ document.getElementById("upload-form").addEventListener("submit", async (event) 
     const formData = new FormData(form);
 
     try {
-        const response = await fetch("http://localhost:8080/api/hr-submit-resume", {
+        const response = await fetch("http://localhost:8080/api/hr-upload/", {
             method: "POST",
             body: formData,
         });
@@ -21,8 +21,7 @@ document.getElementById("upload-form").addEventListener("submit", async (event) 
 
         const result = await response.json();
         alert("File uploaded successfully");
-        
-        
+                
     } catch (error) {
         console.error("Error submitting form:", error);
         alert("Filed saved successfully");
