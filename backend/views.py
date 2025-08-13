@@ -1,8 +1,10 @@
 import os
 from pyexpat import model
 from typing import List
-from fastapi import APIRouter, File, Form, UploadFile
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
+from dbhelper import DBHelper
+from model import RegisterRequest
 from gemini import Gemini, GeminiHR, HR_question_generator
 from emailsender import EmailSender
 from resume_extractor import ResumeExtractor
@@ -10,6 +12,8 @@ from clear_files import clear_all_uploads
 from file_uploader import save_candidate_files, save_hr_files
 
 api = APIRouter(prefix="/api")
+
+db = DBHelper()
 
 @api.get("/hello")
 def hello():
@@ -90,3 +94,36 @@ def generate_hr_questions():
         return {"status": "success", "message": "Questions generated successfully."}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+@api.post("/register")
+def register_user(user: RegisterRequest):
+    # Check if the username or email already exists
+    cursor = db.conn.cursor()
+    cursor.execute("SELECT * FROM users WHERE username = %s OR email = %s", (user.username, user.email))
+    existing_user = cursor.fetchone()
+
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Username or email already exists")
+
+    # Register the new user
+    user_id = db.register_user(
+        user.first_name, 
+        user.last_name, 
+        user.username, 
+        user.phone, 
+        user.email, 
+        user.password, 
+        user.role
+    )
+
+    if user_id:
+        return {"message": "User registered successfully!"}
+    else:
+        raise HTTPException(status_code=500, detail="User registration failed")
+
+@api.get("/users")
+def get_users():
+    db = DBHelper()
+    db.mycursor.execute("SELECT * FROM users")
+    users = db.mycursor.fetchall()
+    return users

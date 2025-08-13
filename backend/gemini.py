@@ -23,12 +23,14 @@ genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 #GEMINI FOR CANDIDATE
 #----------------------------------------------------------------
 
+import os
+
 class Gemini:
-    CANDIDATE_CV_FILE = os.getenv('CANDIDATE_CV_FILE')  # Path to the candidate's resume PDF
-    CANDIDATE_JD_FILE = os.getenv('CANDIDATE_JD_FILE')  # Path to the candidate's job description text file
     MODEL = os.getenv("MODEL")
-    # CANDIDATE_CV_FILE="..\\uploads\\candidate\\cv\\resume.pdf"
-    # CANDIDATE_JD_FILE="..\\uploads\\candidate\\jd\\jd.txt"
+
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # backend/
+    CANDIDATE_CV_FILE = os.path.join(BASE_DIR, "..", "uploads", "candidate", "cv", "resume.pdf")
+    CANDIDATE_JD_FILE = os.path.join(BASE_DIR, "..", "uploads", "candidate", "jd", "jd.txt")
 
     @staticmethod
     def get_gemini_response(prompt):
@@ -57,20 +59,27 @@ class Gemini:
     def process_resume():
         job_desc = Gemini.load_job_description(Gemini.CANDIDATE_JD_FILE)
         resume_text = Gemini.extract_text_from_pdf(Gemini.CANDIDATE_CV_FILE)
-        
-        """Process the resume based on the user's selected action."""
-        
+
         prompt = candidate_match_prompt(job_desc, resume_text)
-        
         response_text = Gemini.get_gemini_response(prompt)
         return response_text
+
 
 class GeminiHR:
     # HR_CV_FILE = os.getenv('HR_CV_FILE')  # Directory where the HR CVs are stored
     # HR_JD_FILE = os.getenv('HR_JD_FILE')  # Path to the HR job description text file
 
-    HR_CV_FILE="..\\uploads\\hr\\cv\\"
-    HR_JD_FILE="..\\uploads\\hr\\jd\\jd.txt"
+    # HR_CV_FILE="..\\uploads\\hr\\cv\\"
+    # HR_JD_FILE="..\\uploads\\hr\\jd\\jd.txt"
+
+    MODEL = os.getenv("MODEL")
+    
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # backend/
+
+    OUTPUT_DIRECTORY = os.path.join(BASE_DIR, "..", "output", "hr_questions")
+    HR_CV_FILE = os.path.join(BASE_DIR, "..", "uploads", "hr", "cv")
+    HR_JD_FILE = os.path.join(BASE_DIR, "..", "uploads", "hr", "jd", "jd.txt")
+
 
     @staticmethod
     def get_gemini_response(prompt):
@@ -120,7 +129,6 @@ class GeminiHR:
         percentage_mapping = dict(sorted(percentage_mapping.items(), key=lambda item: item[1], reverse=True))
         return percentage_mapping
 
-
 #----------------------------------------------------------------
 # Generate questions based on resumes and job description
 #----------------------------------------------------------------
@@ -131,9 +139,15 @@ class HR_question_generator:
     #OUTPUT_DIR = os.getenv('OUTPUT_DIR')
     MODEL = os.getenv("MODEL")
 
-    OUTPUT_DIRECTORY= "..\\output\\hr_questions"
-    HR_CV_FILE="..\\uploads\\hr\\cv\\"
-    HR_JD_FILE="..\\uploads\\hr\\jd\\jd.txt"
+    # OUTPUT_DIRECTORY= "..\\output\\hr_questions"
+    # HR_CV_FILE="..\\uploads\\hr\\cv\\"
+    # HR_JD_FILE="..\\uploads\\hr\\jd\\jd.txt"
+
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # backend/
+    OUTPUT_DIRECTORY = os.path.join(BASE_DIR, "..", "output", "hr_questions")
+    HR_CV_FILE = os.path.join(BASE_DIR, "..", "uploads", "hr", "cv")
+    HR_JD_FILE = os.path.join(BASE_DIR, "..", "uploads", "hr", "jd", "jd.txt")
+
 
     @staticmethod
     def get_gemini_response(prompt):
