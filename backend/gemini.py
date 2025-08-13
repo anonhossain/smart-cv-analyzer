@@ -13,8 +13,7 @@ from docx import Document
 from docx2pdf import convert
 import shutil
 import csv
-
-from backend.prompt import candidate_match_prompt, generate_questions_prompt, hr_match_prompt
+from prompt import candidate_match_prompt, generate_questions_prompt, hr_match_prompt
 
 # Set up Google API key and configure Generative AI
 load_dotenv()
@@ -28,6 +27,8 @@ class Gemini:
     CANDIDATE_CV_FILE = os.getenv('CANDIDATE_CV_FILE')  # Path to the candidate's resume PDF
     CANDIDATE_JD_FILE = os.getenv('CANDIDATE_JD_FILE')  # Path to the candidate's job description text file
     MODEL = os.getenv("MODEL")
+    # CANDIDATE_CV_FILE="..\\uploads\\candidate\\cv\\resume.pdf"
+    # CANDIDATE_JD_FILE="..\\uploads\\candidate\\jd\\jd.txt"
 
     @staticmethod
     def get_gemini_response(prompt):
@@ -65,8 +66,11 @@ class Gemini:
         return response_text
 
 class GeminiHR:
-    HR_CV_FILE = os.getenv('HR_CV_FILE')  # Directory where the HR CVs are stored
-    HR_JD_FILE = os.getenv('HR_JD_FILE')  # Path to the HR job description text file
+    # HR_CV_FILE = os.getenv('HR_CV_FILE')  # Directory where the HR CVs are stored
+    # HR_JD_FILE = os.getenv('HR_JD_FILE')  # Path to the HR job description text file
+
+    HR_CV_FILE="..\\uploads\\hr\\cv\\"
+    HR_JD_FILE="..\\uploads\\hr\\jd\\jd.txt"
 
     @staticmethod
     def get_gemini_response(prompt):
@@ -122,10 +126,14 @@ class GeminiHR:
 #----------------------------------------------------------------
 
 class HR_question_generator:
-    HR_CV_FILE = os.getenv('HR_CV_FILE')  # Directory where the HR CVs are stored
-    HR_JD_FILE = os.getenv('HR_JD_FILE')  # Path to the HR job description text file
-    OUTPUT_DIR = os.getenv('OUTPUT_DIR')
+    # HR_CV_FILE = os.getenv('HR_CV_FILE')  # Directory where the HR CVs are stored
+    # HR_JD_FILE = os.getenv('HR_JD_FILE')  # Path to the HR job description text file
+    #OUTPUT_DIR = os.getenv('OUTPUT_DIR')
     MODEL = os.getenv("MODEL")
+
+    OUTPUT_DIRECTORY= "..\\output\\hr_questions"
+    HR_CV_FILE="..\\uploads\\hr\\cv\\"
+    HR_JD_FILE="..\\uploads\\hr\\jd\\jd.txt"
 
     @staticmethod
     def get_gemini_response(prompt):
@@ -161,8 +169,8 @@ class HR_question_generator:
 
     @staticmethod
     def process_resumes():
-        if not os.path.exists(HR_question_generator.OUTPUT_DIR):
-            os.makedirs(HR_question_generator.OUTPUT_DIR)
+        if not os.path.exists(HR_question_generator.OUTPUT_DIRECTORY):
+            os.makedirs(HR_question_generator.OUTPUT_DIRECTORY)
 
         job_desc = HR_question_generator.load_job_description(HR_question_generator.HR_JD_FILE)
 
@@ -174,7 +182,7 @@ class HR_question_generator:
                 questions = HR_question_generator.get_gemini_response(prompt)
                 # Create filenames
                 base_name = os.path.splitext(filename)[0]
-                docx_output_path = os.path.join(HR_question_generator.OUTPUT_DIR, base_name + "_questions.docx")
+                docx_output_path = os.path.join(HR_question_generator.OUTPUT_DIRECTORY, base_name + "_questions.docx")
                 # Save both versions
                 HR_question_generator.save_text_as_docx(questions, docx_output_path)
                 print(f"Generated: {base_name}questions.docx")

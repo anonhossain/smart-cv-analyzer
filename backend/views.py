@@ -3,6 +3,7 @@ from pyexpat import model
 from typing import List
 from fastapi import APIRouter, File, Form, UploadFile
 from fastapi.responses import JSONResponse
+from gemini import Gemini, GeminiHR, HR_question_generator
 from emailsender import EmailSender
 from resume_extractor import ResumeExtractor
 from clear_files import clear_all_uploads
@@ -63,3 +64,29 @@ async def send_emails(
         return JSONResponse(status_code=400, content={"error": str(ve)})
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": f"An error occurred: {str(e)}"})
+    
+@api.get("/candidate-resume-process")
+def process_resume():
+    """Process the candidate's resume and job description."""
+    try:
+        response = Gemini.process_resume()
+        return {"status": "success", "data": response}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+    
+@api.post("/hr-resumes-sort")
+def process_hr_resumes():
+    try:
+        result = GeminiHR.process_resume()
+        return {"status": "success", "data": result}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+    
+
+@api.post("/generate-hr-questions")
+def generate_hr_questions():
+    try:
+        HR_question_generator.process_resumes()
+        return {"status": "success", "message": "Questions generated successfully."}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}

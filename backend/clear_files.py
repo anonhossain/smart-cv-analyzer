@@ -23,7 +23,9 @@ def clear_all_uploads():
         "./uploads/candidate/cv/",
         "./uploads/candidate/jd/",
         "./uploads/hr/cv/",
-        "./uploads/hr/jd/"
+        "./uploads/hr/jd/",
+        "./output/hr_questions/",
+        "./output/"
     ]
 
     all_deleted = []

@@ -14,7 +14,7 @@ class EmailSender:
     SMTP_SERVER = os.getenv("SMTP_SERVER")
     SMTP_USERNAME = os.getenv("SMTP_USERNAME")
     SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
-    print(SMTP_SERVER, SMTP_USERNAME, SMTP_PASSWORD)
+    #print(SMTP_SERVER, SMTP_USERNAME, SMTP_PASSWORD)
  
     def __init__(self, subject: str, email_col: str, email_message: str, file: UploadFile):
         self.subject = subject
@@ -42,31 +42,19 @@ class EmailSender:
             customized_message = customized_message.replace(placeholder, str(row[column_name]))
         return customized_message
 
-    def send_email(self, to_address: str, body: str):
-        try:
-            with smtplib.SMTP_SSL(self.SMTP_SERVER, 465) as server:
-                server.login(self.SMTP_USERNAME, self.SMTP_PASSWORD)
-                msg = MIMEText(body)
-                msg["Subject"] = self.subject
-                msg["From"] = self.SMTP_USERNAME
-                msg["To"] = to_address
-                server.sendmail(self.SMTP_USERNAME, to_address, msg.as_string())
+    # def send_email(self, to_address: str, body: str):
+    #     try:
+    #         with smtplib.SMTP_SSL(self.SMTP_SERVER, 465) as server:
+    #             server.login(self.SMTP_USERNAME, self.SMTP_PASSWORD)
+    #             msg = MIMEText(body)
+    #             msg["Subject"] = self.subject
+    #             msg["From"] = self.SMTP_USERNAME
+    #             msg["To"] = to_address
+    #             server.sendmail(self.SMTP_USERNAME, to_address, msg.as_string())
                 
-                print(f"Email sent to {to_address}")
-        except Exception as e:
-            print(f"Failed to send email to {to_address}: {e}")
-
-    # async def send_bulk_emails(self):
-    #     await self.read_file()
-
-    #     if self.email_col not in self.df.columns:
-    #         raise ValueError(f"'{self.email_col}' column not found in the file.")
-
-    #     for _, row in self.df.iterrows():
-    #         to_address = row[self.email_col]
-    #         body = self.replace_placeholders(self.email_message, row)
-    #         self.send_email(to_address, body)
-
+    #             print(f"Email sent to {to_address}")
+    #     except Exception as e:
+    #         print(f"Failed to send email to {to_address}: {e}")
 
     async def send_bulk_emails(self):
         await self.read_file()
