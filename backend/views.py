@@ -95,15 +95,22 @@ def generate_hr_questions():
         return {"status": "success", "message": "Questions generated successfully."}
     except Exception as e:
         return {"status": "error", "message": str(e)}
-    
+
 @api.post("/register")
-def register_user(user: RegisterRequest):
-    return UserController.register_user(user)
+def register_user(
+    first_name: str = Form(...),
+    last_name: str = Form(...),
+    username: str = Form(...),
+    phone: str = Form(...),
+    email: str = Form(...),
+    password: str = Form(...),
+    role: str = Form(...)
+):
+    return UserController.register_user(first_name, last_name, username, phone, email, password, role)
 
 @api.get("/users") 
 def get_users():
     return UserController.get_users()
-
 
 @api.get("/delete-users/{user_id}")
 def delete_user(user_id: int):

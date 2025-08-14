@@ -6,12 +6,12 @@ db = DBHelper()
 class UserController:
 
     @staticmethod
-    def register_user(user):
+    def register_user(first_name, last_name, username, phone, email, password, role):
         # Check if the username or email already exists
         cursor = db.conn.cursor()
         cursor.execute(
             "SELECT * FROM users WHERE username = %s OR email = %s",
-            (user.username, user.email)
+            (username, email)
         )
         existing_user = cursor.fetchone()
 
@@ -20,13 +20,13 @@ class UserController:
 
         # Register the new user
         user_id = db.register_user(
-            user.first_name, 
-            user.last_name, 
-            user.username, 
-            user.phone, 
-            user.email, 
-            user.password, 
-            user.role
+            first_name, 
+            last_name, 
+            username, 
+            phone, 
+            email, 
+            password, 
+            role
         )
 
         if user_id:

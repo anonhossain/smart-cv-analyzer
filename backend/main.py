@@ -7,7 +7,7 @@ from views import api
 app = FastAPI()
 
 # Serve static frontend files
-app.mount("/", StaticFiles(directory="./frontend/landing_page", html=True), name="static")
+#app.mount("/", StaticFiles(directory="./frontend/landing_page", html=True), name="static")
 
 # Allow frontend to communicate with backend (adjust origin if needed)
 origins = ["http://127.0.0.1:5500/",]
