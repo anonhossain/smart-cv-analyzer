@@ -60,7 +60,7 @@ function populateTable(users, data) {
         deleteButton.textContent = "Delete";
         deleteButton.onclick = function () {
             if (confirm("Are you sure you want to delete this user?")) {
-                fetch("http://localhost:8080/api/users/delete/" + user[0])
+                fetch("http://localhost:8080/api/delete-users/" + user[0])
                     .then((response) => {
                         if (response.ok) {
                             alert("User deleted successfully!");

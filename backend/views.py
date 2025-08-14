@@ -3,6 +3,7 @@ from pyexpat import model
 from typing import List
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
+from user_controller import UserController
 from dbhelper import DBHelper
 from model import RegisterRequest
 from gemini import Gemini, GeminiHR, HR_question_generator
@@ -94,36 +95,34 @@ def generate_hr_questions():
         return {"status": "success", "message": "Questions generated successfully."}
     except Exception as e:
         return {"status": "error", "message": str(e)}
-
+    
 @api.post("/register")
 def register_user(user: RegisterRequest):
-    # Check if the username or email already exists
-    cursor = db.conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE username = %s OR email = %s", (user.username, user.email))
-    existing_user = cursor.fetchone()
+    return UserController.register_user(user)
 
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Username or email already exists")
-
-    # Register the new user
-    user_id = db.register_user(
-        user.first_name, 
-        user.last_name, 
-        user.username, 
-        user.phone, 
-        user.email, 
-        user.password, 
-        user.role
-    )
-
-    if user_id:
-        return {"message": "User registered successfully!"}
-    else:
-        raise HTTPException(status_code=500, detail="User registration failed")
-
-@api.get("/users")
+@api.get("/users") 
 def get_users():
-    db = DBHelper()
+    return UserController.get_users()
+
+
+@api.get("/delete-users/{user_id}")
+def delete_user(user_id: int):
+    return UserController.delete_user(user_id)
+
+@api.get("/info")
+def dashboardinfo():
+    
     db.mycursor.execute("SELECT * FROM users")
     users = db.mycursor.fetchall()
-    return users
+    candidate = 0
+    admin = 0
+    hr = 0
+    for user in users:
+        if user[7] == 'Candidate':
+            candidate += 1
+        if user[7] == 'Admin':
+            admin += 1
+        if user[7] == 'HR':
+            hr += 1
+    
+    return {"candidate": candidate, "admin": admin, "hr": hr}

@@ -1,4 +1,5 @@
 import mysql.connector
+
 # Your env.py file with host, user, password, database
 
 class DBHelper:
@@ -7,6 +8,7 @@ class DBHelper:
             host="localhost",
             user="root",
             password="",
+            
             database="smart_resume_analyzer"
         )
         self.mycursor = self.conn.cursor(dictionary=True)
