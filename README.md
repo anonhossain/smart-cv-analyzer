@@ -72,11 +72,11 @@ CV Tutor is a smart AI-based web application that enhances job applications for 
 
 ## 🚀 Tech Stack
 
-- **Frontend:** HTML, CSS, JavaScript
-- **Backend:** Python, FastAPI
-- **AI/NLP:** Gemini, Redex
+- **Frontend:** `HTML`, `CSS`, `JavaScript`
+- **Backend:** `Python`, `FastAPI`
+- **AI/NLP:** `Gemini`, `Redex`
 - **File Handling:** `python-docx`, `openpyxl`, `pdfplumber`
-- **Automation:** SMTP, Email Templates
+- **Automation:** `SMTP`, `Email Templates`
 
 ---
 
@@ -89,6 +89,56 @@ Follow these steps to get the AI-Powered Recruitment Assistant running locally:
 git clone https://github.com/anonhossain/smart-cv-analyzer.git
 cd smart-cv-analyzer
 ```
-2. ** Create a virtual environment
+### 2. Create a virtual environment 
 
-3. 
+### 3. Activate the virtual environment 
+- **On Windows:**
+
+```bash
+.venv\Scripts\activate
+```
+
+- **On MacOs/Linux:**
+
+```bash
+source .venv/bin/activate
+```
+  
+### 4. Install Dependencies
+### 5. Create a `.env` file in the project root and add your API key(s)
+- Get your Gemini API key here (or your preferred AI service).
+- Example `.env` content:
+  
+  ``` env
+  CANDIDATE_CV_FILE=..\\uploads\\candidate\\cv\\resume.pdf
+  CANDIDATE_JD_FILE=..\\uploads\\candidate\\jd\\jd.txt
+
+  HR_CV_FILE=./uploads/hr/cv/
+  HR_JD_FILE=./uploads/hr/jd/
+
+  OUTPUT_DIRECTORY=./output
+
+  SMTP_SERVER="smtp.gmail.com"
+  SMTP_USERNAME="Your_Email"
+  SMTP_PASSWORD="App Password"
+  PORT=465
+
+  GOOGLE_API_KEY = "Your_API_Key"
+  MODEL = "Your_Prefered_Model"
+  
+  ```
+### 6. Run the application
+
+```bash
+uvicorn main:app --reload
+```
+
+### 7. Access the App
+**Open your browser and go to:**
+
+```cpp
+http://127.0.0.1:8000
+```
+
+Now you’re ready to start uploading resumes and job descriptions to analyze, generate questions, and automate email workflows.
+
