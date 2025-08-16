@@ -79,3 +79,16 @@ CV Tutor is a smart AI-based web application that enhances job applications for 
 - **Automation:** SMTP, Email Templates
 
 ---
+
+## 🛠️ How to Use This Repository
+
+Follow these steps to get the AI-Powered Recruitment Assistant running locally:
+
+1. **Clone the repository**  
+```bash
+git clone https://github.com/anonhossain/smart-cv-analyzer.git
+cd smart-cv-analyzer
+```
+2. ** Create a virtual environment
+
+3. 
