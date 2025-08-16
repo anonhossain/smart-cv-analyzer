@@ -91,6 +91,11 @@ cd smart-cv-analyzer
 ```
 ### 2. Create a virtual environment 
 
+```bash
+python3 -m venv .venv
+```
+**Note:** Use `python` instead of `python3` based on your system.
+
 ### 3. Activate the virtual environment 
 - **On Windows:**
 
@@ -105,6 +110,10 @@ source .venv/bin/activate
 ```
   
 ### 4. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
 ### 5. Create a `.env` file in the project root and add your API key(s)
 - Get your Gemini API key here (or your preferred AI service).
 - Example `.env` content:
