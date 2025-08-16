@@ -5,7 +5,7 @@ from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 from user_controller import UserController
 from dbhelper import DBHelper
-from model import RegisterRequest
+from model import LoginRequest, RegisterRequest, UserOut, UserUpdate
 from gemini import Gemini, GeminiHR, HR_question_generator
 from emailsender import EmailSender
 from resume_extractor import ResumeExtractor
@@ -97,16 +97,12 @@ def generate_hr_questions():
         return {"status": "error", "message": str(e)}
 
 @api.post("/register")
-def register_user(
-    first_name: str = Form(...),
-    last_name: str = Form(...),
-    username: str = Form(...),
-    phone: str = Form(...),
-    email: str = Form(...),
-    password: str = Form(...),
-    role: str = Form(...)
-):
-    return UserController.register_user(first_name, last_name, username, phone, email, password, role)
+def register_user(user: RegisterRequest):
+    return UserController.register_user(user)
+
+@api.post("/login")
+def login_user(request: LoginRequest):
+    return UserController.login(request.username, request.password)
 
 @api.get("/users") 
 def get_users():
@@ -118,18 +114,21 @@ def delete_user(user_id: int):
 
 @api.get("/info")
 def dashboardinfo():
-    
-    db.mycursor.execute("SELECT * FROM users")
-    users = db.mycursor.fetchall()
-    candidate = 0
-    admin = 0
-    hr = 0
-    for user in users:
-        if user[7] == 'Candidate':
-            candidate += 1
-        if user[7] == 'Admin':
-            admin += 1
-        if user[7] == 'HR':
-            hr += 1
-    
-    return {"candidate": candidate, "admin": admin, "hr": hr}
+    users = db.get_all_users()  # ✅ now exists
+    roles = [user["role"].lower() for user in users]
+
+    return {
+        "candidate": roles.count("candidate"),
+        "hr": roles.count("hr"),
+        "admin": roles.count("admin"),
+    }
+
+@api.patch("/users/{user_id}", response_model=UserOut)
+def update_user(user_id: int, user: UserUpdate):
+    if not db.get_user_by_id(user_id):
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if not db.update_user(user_id, user.dict()):
+        raise HTTPException(status_code=500, detail="Failed to update user")
+
+    return UserOut(id=user_id, **user.dict())

@@ -38,3 +38,6 @@ class UserUpdate(BaseModel):
     phone: str  # Consider adding regex validation for phone numbers if necessary
     email: EmailStr  # Validates email format
     role: str
+
+class UserOut(UserUpdate):
+    id: int

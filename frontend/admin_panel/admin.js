@@ -32,35 +32,32 @@ async function fetchUsers() {
     }
 }
 
-// Populate table with user data
 function populateTable(users, data) {
     usertables.innerHTML = ""; // Clear previous entries
-    i=1;
+    let i = 1;
     users.forEach((user) => {
         const row = usertables.insertRow();
         row.insertCell(0).textContent = i;
-        row.insertCell(1).textContent = user[1];
-        row.insertCell(2).textContent = user[2];
-        row.insertCell(3).textContent = user[3];
-        row.insertCell(4).textContent = user[4];
-        row.insertCell(5).textContent = user[5];
-        row.insertCell(6).textContent = user[6];
-        row.insertCell(7).textContent = user[7];
+        row.insertCell(1).textContent = user.first_name;
+        row.insertCell(2).textContent = user.last_name;
+        row.insertCell(3).textContent = user.username;
+        row.insertCell(4).textContent = user.phone;
+        row.insertCell(5).textContent = user.email;
+        row.insertCell(6).textContent = user.role;
 
         // Add action buttons
-        const actionsCell = row.insertCell(8);
+        const actionsCell = row.insertCell(7);
         const editButton = document.createElement("button");
         editButton.textContent = "Edit";
         editButton.onclick = () => openEditModal(user);
         actionsCell.appendChild(editButton);
 
-        const deleteCell = row.insertCell(9);
+        const deleteCell = row.insertCell(8);
         const deleteButton = document.createElement("button");
-        deleteButton.href = "#";
         deleteButton.textContent = "Delete";
         deleteButton.onclick = function () {
             if (confirm("Are you sure you want to delete this user?")) {
-                fetch("http://localhost:8080/api/delete-users/" + user[0])
+                fetch("http://localhost:8080/api/delete-users/" + user.id)
                     .then((response) => {
                         if (response.ok) {
                             alert("User deleted successfully!");
@@ -78,24 +75,39 @@ function populateTable(users, data) {
         deleteCell.appendChild(deleteButton);
         i++;
     });
+
+    // Update dashboard counts
     document.getElementById("Candidate").innerHTML = data.candidate;
     document.getElementById("HR").innerHTML = data.hr;
     document.getElementById("Admin").innerHTML = data.admin;
-
-
 }
 
 // Open edit modal with user data
 function openEditModal(user) {
-    currentUserId = user[0];
-    document.getElementById("editFirstName").value = user[1];
-    document.getElementById("editLastName").value = user[2];
-    document.getElementById("editUsername").value = user[3];
-    document.getElementById("editPhone").value = user[4];
-    document.getElementById("editEmail").value = user[5];
-    document.getElementById("editRole").value = user[6];
+    currentUserId = user.id;
+    document.getElementById("editFirstName").value = user.first_name;
+    document.getElementById("editLastName").value = user.last_name;
+    document.getElementById("editUsername").value = user.username;
+    document.getElementById("editPhone").value = user.phone;
+    document.getElementById("editEmail").value = user.email;
+    document.getElementById("editRole").value = user.role;
     editUserModal.style.display = "block";
 }
+
+// Filter users based on selected role
+roleFilter.onchange = function() {
+    const selectedRole = roleFilter.value.toLowerCase();
+    const filteredUsers = selectedRole === "all" 
+        ? users 
+        : users.filter(user => user.role.toLowerCase() === selectedRole);
+
+    populateTable(filteredUsers, {
+        candidate: document.getElementById("Candidate").innerHTML,
+        hr: document.getElementById("HR").innerHTML,
+        admin: document.getElementById("Admin").innerHTML
+    });
+};
+
 
 // Close edit modal
 function closeEditModal() {
@@ -147,12 +159,16 @@ editUserForm.onsubmit = async function (e) {
 
 // Filter users based on selected role
 roleFilter.onchange = function() {
-    const selectedRole = roleFilter.value;
-    const filteredUsers = selectedRole === "All" 
+    const selectedRole = roleFilter.value.toLowerCase();
+    const filteredUsers = selectedRole === "all" 
         ? users 
-        : users.filter(user => user[7] === selectedRole); // Assuming role is at index 6
+        : users.filter(user => user.role.toLowerCase() === selectedRole);
 
-    populateTable(filteredUsers);
+    populateTable(filteredUsers, {
+        candidate: document.getElementById("Candidate").innerHTML,
+        hr: document.getElementById("HR").innerHTML,
+        admin: document.getElementById("Admin").innerHTML
+    });
 };
 
 // Initial fetch of users

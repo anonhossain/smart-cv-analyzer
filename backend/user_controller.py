@@ -6,33 +6,90 @@ db = DBHelper()
 class UserController:
 
     @staticmethod
-    def register_user(first_name, last_name, username, phone, email, password, role):
-        # Check if the username or email already exists
+    def register_user(user):
         cursor = db.conn.cursor()
         cursor.execute(
             "SELECT * FROM users WHERE username = %s OR email = %s",
-            (username, email)
+            (user.username, user.email)
         )
         existing_user = cursor.fetchone()
 
         if existing_user:
             raise HTTPException(status_code=400, detail="Username or email already exists")
 
-        # Register the new user
         user_id = db.register_user(
-            first_name, 
-            last_name, 
-            username, 
-            phone, 
-            email, 
-            password, 
-            role
+            user.first_name, 
+            user.last_name, 
+            user.username, 
+            user.phone, 
+            user.email, 
+            user.password, 
+            user.role
         )
 
         if user_id:
             return {"message": "User registered successfully!"}
         else:
             raise HTTPException(status_code=500, detail="User registration failed")
+
+    @staticmethod
+    def login(username: str, password: str):
+        data = db.search(username, password)
+
+        print("DB search returned:", data)  # Debugging
+
+        if not data:
+            raise HTTPException(
+                status_code=401,
+                detail="Incorrect email, phone number, or username/password"
+            )
+
+        user = None
+
+        # Case 1: data is already a dict
+        if isinstance(data, dict):
+            user = data
+
+        # Case 2: data is list of dicts
+        elif isinstance(data, list) and len(data) > 0 and isinstance(data[0], dict):
+            user = data[0]
+
+        # Case 3: data is list of tuples/rows (e.g. raw SQL fetchall)
+        elif isinstance(data, (list, tuple)) and len(data) > 0 and isinstance(data[0], (list, tuple)):
+            row = data[0]
+            return {
+                "message": "Login successful",
+                "user": {
+                    "id": row[0],
+                    "name": f"{row[1]} {row[2]}",
+                    "role": row[7]
+                }
+            }
+
+        else:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Unexpected data format from database: {type(data)}"
+            )
+
+        # Unified return for dict-style user
+        return {
+            "message": "Login successful",
+            "user": {
+                "id": user.get("id"),
+                "name": f"{user.get('first_name', '')} {user.get('last_name', '')}",
+                "role": user.get("role")
+            }
+        }
+
+    def search(self, identifier, password):
+        # Searching by email, phone, or username
+        self.mycursor.execute("""
+        SELECT * FROM users WHERE (email = %s OR phone = %s OR username = %s) AND password = %s
+        """, (identifier, identifier, identifier, password))
+
+        data = self.mycursor.fetchall()
+        return data
 
     @staticmethod
     def get_users():

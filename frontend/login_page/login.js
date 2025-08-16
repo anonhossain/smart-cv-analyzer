@@ -20,12 +20,12 @@ document.getElementById("loginForm").onsubmit = async function(e) {
             // console.log("Full response:", result); // Log the entire response to confirm structure
 
             // Exact match on role
-            if (result["user"]["role"] === "Admin") {
+            if (result["user"]["role"] === "admin") {
                 // alert("Admin login successful!");
                 window.location.href = "/frontend/admin_panel/admin.html"; // Redirect to admin page
             } else if (result["user"]["role"] === "HR") {
                 // alert("HR login successful!");
-                window.location.href = "/frontend/body/hr_body.html"; // Redirect to HR page
+                window.location.href = "/frontend/dashboard/hr_body.html"; // Redirect to HR page
             } else {
                 // alert("Login successful!");
                 window.location.href = "/frontend/welcome_page/welcomeCan.html"; // Redirect to general welcome page
