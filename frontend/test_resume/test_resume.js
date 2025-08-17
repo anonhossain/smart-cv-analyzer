@@ -10,7 +10,7 @@ async function submitForm() {
 
   // Send the request with fetch
   try {
-    const response = await fetch("http://localhost:8080/api/upload_files/", {
+    const response = await fetch("http://localhost:8080/api/candidate-upload/", {
       method: "POST",
       body: formData,
     });
@@ -38,19 +38,21 @@ async function analyzeResume() {
   loading.style.display = "block";
   container.style.display = "none";
   try {
-    const response = await fetch("http://localhost:8080/api/analyze_resume/", {
-      method: "GET", 
+    const response = await fetch("http://localhost:8080/api/candidate-resume-process", {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
+
 
     const data = await response.json();
 
     if (response.ok) {
       // Show a success alert
       // alert("Resume analysis successful");
-      var text = JSON.stringify(data.response);
+      // var text = JSON.stringify(data.response);
+      var text = data.data;
       text = text.replace(/\\n/g, "<br>");
       text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
       text = text.replace(/\*(.*?)\*/g, "<em>$1</em>");

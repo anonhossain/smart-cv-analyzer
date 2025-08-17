@@ -1,4 +1,9 @@
-/* landing.css */
+:root {
+    --c1:#205072; /* deep teal */
+    --c2:#329D9C; /* teal */
+    --c3:#7BE495; /* mint / light green */
+    --c4:#CFF4D2; /* pale green */
+}
 
 * {
     box-sizing: border-box;
@@ -11,10 +16,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-color: #205072;
-    color: #fff;
+    min-height: 100vh;
+    padding: 20px;
+    background-color: var(--c1); /* solid deep teal */
     overflow: hidden;
+    color: #fff;
 }
 
 .landing-container {
@@ -24,13 +30,13 @@ body {
 
 .animated-title {
     font-size: 2.5rem;
-    color: #CFF4D2;
+    color: var(--c4);
     animation: textBounce 1s ease-out infinite alternate;
 }
 
 .animated-title span {
     display: inline-block;
-    color: #7BE495;
+    color: var(--c3);
     animation: fadeInTitle 2s ease-in-out;
 }
 
@@ -46,26 +52,68 @@ body {
 
 .button-container {
     margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
+/* Buttons */
 button {
-    background-color: #329D9C;
-    color: #fff;
+    padding: 12px 25px;
     font-size: 1.2rem;
-    padding: 0.75rem 1.5rem;
-    margin: 0 0.5rem;
+    font-weight: bold;
+    border-radius: 8px;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition: all 0.3s ease;
 }
 
-button:hover {
-    background-color: #205072;
+/* Teal button */
+.teal-btn {
+    background-color: var(--c2);
+    color: white;
+}
+.teal-btn:hover {
+    background-color: var(--c1);
     transform: scale(1.05);
 }
 
+/* Light Green button */
+.green-btn {
+    background-color: var(--c3);
+    color: var(--c1);
+}
+.green-btn:hover {
+    background-color: var(--c2);
+    color: white;
+}
+
+/* Fade in animation */
 @keyframes fadeIn {
     0% { opacity: 0; transform: translateY(20px); }
     100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .animated-title {
+        font-size: 2rem;
+    }
+
+    button {
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .animated-title {
+        font-size: 1.5rem;
+    }
+
+    button {
+        font-size: 0.9rem;
+        padding: 8px 15px;
+    }
 }

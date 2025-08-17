@@ -1,28 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="login.css">
-    <script type="module" src="login.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="login.css">
+  <script type="module" src="login.js"></script>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Login</h2>
-        <form id="loginForm">
-            <label for="username">Email/Username/Phone:</label>
-            <input type="text" id="username" name="username" required>
+  <div class="login-container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <div class="field">
+        <label for="username">Email / Username / Phone</label>
+        <input type="text" id="username" name="username" required />
+      </div>
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required />
+      </div>
 
-            <button type="submit">Login</button>
-            <button type="button" id="signupButton">Signup</button>
+      <!-- Login + Signup same row -->
+      <div class="row-actions">
+        <button type="submit">Login</button>
+        <button type="button" id="signupButton">Signup</button>
+      </div>
 
-            <button type="button"  id="test_resume">Test Resume</button>
-        </form>
-    </div>
+      <!-- Test Resume below -->
+      <div class="field full">
+        <button type="button" id="test_resume">Test Resume</button>
+      </div>
+    </form>
+  </div>
 </body>
 </html>
-

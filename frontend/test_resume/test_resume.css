@@ -1,157 +1,169 @@
-/* Apply a gradient background animation for a dynamic look */
-body {
-  font-family: Arial, sans-serif;
+:root {
+  --c1:#205072; /* deep teal */
+  --c2:#329D9C; /* teal */
+  --c3:#7BE495; /* mint / light green */
+  --c4:#CFF4D2; /* pale green */
+}
+
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Base Styles with Gradient Background */
+body {
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: linear-gradient(45deg, #205072, #329d9c, #7be495, #cff4d2);
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 30px;
+  background: linear-gradient(45deg, #205072, #329D9C, #7BE495, #CFF4D2);
   background-size: 400% 400%;
   animation: gradientAnimation 15s ease infinite;
-  box-sizing: border-box;
 }
 
 @keyframes gradientAnimation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
+/* Container */
 .container {
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.9);
   border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
   padding: 30px;
+  width: 100%;
   max-width: 500px;
-  width: 90%;
   text-align: center;
-  box-sizing: border-box;
 }
 
-.result-panel {
-  background-color: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  padding: 20px;
-  max-width: 500px;
-  width: 40%;
-  text-align: center;
-  margin-left: 20px;
-  display: none; /* Hidden by default */
-}
-
+/* Headings */
 h2 {
-  color: #205072;
-  font-size: 24px;
-  margin-bottom: 20px;
+  color: var(--c1);
+  margin-bottom: 25px;
 }
 
 /* Upload Section */
 .upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
   margin-bottom: 20px;
 }
 
 .upload-section label {
   font-weight: bold;
-  color: #205072;
-  margin-bottom: 5px;
-  display: block;
+  color: var(--c1);
+  text-align: left;
 }
 
 .upload-section textarea,
 .upload-section input[type="file"] {
   width: 100%;
   padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #329d9c;
-  background-color: #cff4d2;
-  color: #205072;
+  border-radius: 8px;
+  border: 1px solid var(--c2);
   font-size: 16px;
-  margin-bottom: 10px;
-  box-sizing: border-box;
   resize: vertical;
+  background-color: var(--c4);
+  color: var(--c1);
 }
 
-.upload-section input[type="file"] {
-  padding: 8px;
-  cursor: pointer;
-}
-
-/* Button Section */
+/* Buttons */
 .button-section {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   justify-content: space-between;
-  margin-top: 20px;
-}
-
-.button-section button {
-  background-color: #004d40;
-  color: #ffffff;
-  border: none;
-  border-radius: 5px;
-  padding: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  width: 32%;
-  opacity: 0.5; /* Start disabled */
-}
-
-.button-section button.active {
-  opacity: 1; /* Button active state */
-}
-
-.button-section button:hover {
-  background-color: #ffffff; /* Change to White */
-  color: #004d40; /* Deep Green text */
-  border: 2px solid #004d40; /* Maintain Green Border */
-  transform: translateY(-3px);
-}
-
-#submit-button {
-  background-color: #329d9c;
-  font-size: 16px;
-  color: #ffffff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
   margin-top: 15px;
 }
 
-#submit-button:hover {
-  background-color: #205072;
-  transform: translateY(-3px);
+.button-section button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
+/* Teal buttons (Login/Analyze) */
+.teal-btn {
+  background-color: var(--c2);
+  color: white;
+}
+
+.teal-btn:hover {
+  background-color: var(--c1);
+  color: white;
+}
+
+/* Light green buttons (Submit) */
+.green-btn {
+  background-color: var(--c3);
+  color: var(--c1);
+}
+
+.green-btn:hover {
+  background-color: var(--c2);
+  color: white;
+}
+
+/* Result panel */
 .result-panel {
-  background-color: #ffffff;
+  background-color: rgba(255,255,255,0.95);
   border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
   padding: 20px;
-  max-width: none;
-  width: 90%;
-  text-align: center;
-  margin: 20px auto 0;
-  display: none; /* Hidden by default */
-}
-
-.result-panel h2 {
-  color: #205072;
-  font-size: 20px;
+  margin-top: 20px;
+  display: none;
+  text-align: left;
 }
 
 .result-panel #resultContent {
-  color: #329d9c;
+  color: var(--c2);
   font-size: 16px;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  .button-section button {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .container {
+    width: 90%;
+    padding: 15px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  .upload-section textarea,
+  .upload-section input[type="file"] {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .button-section button {
+    font-size: 14px;
+    padding: 8px;
+  }
 }

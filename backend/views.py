@@ -70,12 +70,32 @@ async def send_emails(
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": f"An error occurred: {str(e)}"})
     
-@api.get("/candidate-resume-process")
-def process_resume():
-    """Process the candidate's resume and job description."""
+# @api.get("/candidate-resume-process")
+# def process_resume():
+#     """Process the candidate's resume and job description."""
+#     try:
+#         response = Gemini.process_resume()
+#         return {"status": "success", "data": response}
+#     except Exception as e:
+#         return {"status": "error", "message": str(e)}
+
+@api.post("/candidate-upload/")
+async def upload_candidate_files(
+    job_desc: str = Form(...),
+    resume: UploadFile = File(...)
+):
     try:
-        response = Gemini.process_resume()
-        return {"status": "success", "data": response}
+        # Save resume file
+        resume_path = f"uploads/candidate/cv/{resume.filename}"
+        with open(resume_path, "wb") as f:
+            f.write(await resume.read())
+
+        # Save job description
+        jd_path = "uploads/candidate/jd/jd.txt"
+        with open(jd_path, "w") as f:
+            f.write(job_desc)
+
+        return {"status": "success", "message": "Files uploaded successfully"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
     
