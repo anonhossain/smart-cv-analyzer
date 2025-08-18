@@ -2,7 +2,7 @@ import os
 from pyexpat import model
 from typing import List
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from user_controller import UserController
 from dbhelper import DBHelper
 from model import LoginRequest, RegisterRequest, UserOut, UserUpdate
@@ -64,7 +64,15 @@ async def send_emails(
     try:
         sender = EmailSender(subject, email_col, email_message, file)
         await sender.send_bulk_emails()
-        return {"message": "Emails sent successfully!"}
+        
+        # Get the updated file with send status
+        file_data, content_type, filename = sender.get_updated_file()
+        
+        return StreamingResponse(
+            file_data, 
+            media_type=content_type,
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
     except ValueError as ve:
         return JSONResponse(status_code=400, content={"error": str(ve)})
     except Exception as e:
