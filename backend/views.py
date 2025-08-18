@@ -70,14 +70,14 @@ async def send_emails(
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": f"An error occurred: {str(e)}"})
     
-# @api.get("/candidate-resume-process")
-# def process_resume():
-#     """Process the candidate's resume and job description."""
-#     try:
-#         response = Gemini.process_resume()
-#         return {"status": "success", "data": response}
-#     except Exception as e:
-#         return {"status": "error", "message": str(e)}
+@api.get("/candidate-resume-process")
+def process_resume():
+    """Process the candidate's resume and job description."""
+    try:
+        response = Gemini.process_resume()
+        return {"status": "success", "data": response}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 @api.post("/candidate-upload/")
 async def upload_candidate_files(
@@ -99,7 +99,7 @@ async def upload_candidate_files(
     except Exception as e:
         return {"status": "error", "message": str(e)}
     
-@api.post("/hr-resumes-sort")
+@api.get("/hr-resumes-sort")
 def process_hr_resumes():
     try:
         result = GeminiHR.process_resume()

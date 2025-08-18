@@ -1,0 +1,33 @@
+<aside class="sidebar">
+    <nav>
+        <ul>
+            <li><a href="#" id="dashboardLink" class="active">Dashboard</a></li>
+            <li><a href="#" id="usersLink">Users</a></li>
+        </ul>
+    </nav>
+
+    <!-- Logout Button -->
+    <button id="logoutBtn">Logout</button>
+</aside>
+
+
+
+/* Logout Button */
+#logoutBtn {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    padding: 10px;
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#logoutBtn:hover {
+    background-color: #c0392b;
+}

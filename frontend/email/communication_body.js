@@ -26,7 +26,6 @@ document.getElementById("excel-upload").addEventListener("change", async functio
             columnSelect.appendChild(option);
         });
 
-        document.getElementById("email-column-section").style.display = "block";
     } catch (error) {
         console.error("Error fetching columns:", error);
         alert("Received the File");

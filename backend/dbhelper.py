@@ -14,33 +14,22 @@ class DBHelper:
         )
         self.mycursor = self.conn.cursor(dictionary=True)
 
-    # def register_user(self, first_name, last_name, username, phone, email, password, role):
-    #     sql = """
-    #     INSERT INTO users (first_name, last_name, username, phone, email, password, role)
-    #     VALUES (%s, %s, %s, %s, %s, %s, %s)
-    #     """
-    #     values = (first_name, last_name, username, phone, email, password, role)
-    #     self.mycursor.execute(sql, values)
-    #     self.conn.commit()
-    #     return self.mycursor.lastrowid
-
-    def register_user(self, first_name, last_name, username, phone, email, password,role):
+    def register_user(self, first_name, last_name, username, phone, email, password, role):
         try:
-            # Check if the username, email, or phone already exists
-            self.mycursor.execute("SELECT * FROM users WHERE username=%s OR email=%s OR phone=%s",
-                                  (username, email, phone))
-            if self.mycursor.fetchone():
-                return -1  # User already exists
+            cursor = self.conn.cursor()
+            cursor.execute("""
+                INSERT INTO users (first_name, last_name, username, phone, email, password, role)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (first_name, last_name, username, phone, email, password, role))
 
-            self.mycursor.execute(
-    "INSERT INTO users (first_name, last_name, username, phone, email, password, `role`) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-    (first_name, last_name, username, phone, email, password, role)
-)
-            self.conn.commit()
-            return self.mycursor.lastrowid  # Return the ID of the newly created user
-        except mysql.connector.Error as e:
-            print(f"Error during registration: {e}")
-            return -1
+            self.conn.commit()  # 🔑 Very important: saves the data
+            user_id = cursor.lastrowid  # get the new user ID
+            cursor.close()
+            return user_id
+        except Exception as e:
+            print("DB Error while registering user:", e)
+            self.conn.rollback()
+            return None
 
     def search(self, identifier, password):
         # Searching by email, phone, or username
