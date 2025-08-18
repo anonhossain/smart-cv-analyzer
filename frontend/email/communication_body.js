@@ -59,14 +59,33 @@ document.getElementById("mail-sms-form").addEventListener("submit", async functi
             body: formData,
         });
 
-        const result = await response.json();
-
         if (!response.ok) {
-            alert(`Error: ${result.error}`);
+            // Try to get error message from JSON response
+            try {
+                const result = await response.json();
+                alert(`Error: ${result.error}`);
+            } catch {
+                alert("An error occurred while sending emails.");
+            }
             return;
         }
 
-        alert("Emails sent successfully!");
+        // Response is a file, trigger download
+        const blob = await response.blob();
+        const filename = response.headers.get('Content-Disposition')?.match(/filename=(.+)/)?.[1] || 'emails_with_status.xlsx';
+        
+        // Create download link
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+        alert("Emails sent successfully! The file with send status has been downloaded.");
     } catch (error) {
         console.error("Error submitting form:", error);
         alert("Failed to submit form. Please try again.");

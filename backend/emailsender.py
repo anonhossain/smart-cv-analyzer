@@ -62,23 +62,52 @@ class EmailSender:
         if self.email_col not in self.df.columns:
             raise ValueError(f"'{self.email_col}' column not found in the file.")
 
+        # Add Send Status column
+        self.df['Send Status'] = 'Failed'
+
         try:
             with smtplib.SMTP_SSL(self.SMTP_SERVER, 465) as server:
                 server.login(self.SMTP_USERNAME, self.SMTP_PASSWORD)
 
-                for _, row in self.df.iterrows():
+                for index, row in self.df.iterrows():
                     to_address = row[self.email_col]
                     if not isinstance(to_address, str) or to_address.strip() == "" or to_address.lower() == "nan":
                         print(f"Skipping invalid email: {to_address}")
+                        self.df.at[index, 'Send Status'] = 'Failed'
                         continue
 
-                    body = self.replace_placeholders(self.email_message, row)
-                    msg = MIMEText(body)
-                    msg["Subject"] = self.subject
-                    msg["From"] = self.SMTP_USERNAME
-                    msg["To"] = to_address
-                    server.sendmail(self.SMTP_USERNAME, to_address, msg.as_string())
-                    print(f"Email sent to {to_address}")
+                    try:
+                        body = self.replace_placeholders(self.email_message, row)
+                        msg = MIMEText(body)
+                        msg["Subject"] = self.subject
+                        msg["From"] = self.SMTP_USERNAME
+                        msg["To"] = to_address
+                        server.sendmail(self.SMTP_USERNAME, to_address, msg.as_string())
+                        print(f"Email sent to {to_address}")
+                        self.df.at[index, 'Send Status'] = 'Sent'
+                    except Exception as e:
+                        print(f"Failed to send email to {to_address}: {e}")
+                        self.df.at[index, 'Send Status'] = 'Failed'
 
         except Exception as e:
             print(f"Error sending emails: {e}")
+            # Mark all as failed if server connection fails
+            self.df['Send Status'] = 'Failed'
+
+    def get_updated_file(self):
+        """Return the updated DataFrame as a BytesIO file"""
+        from io import BytesIO
+        
+        output = BytesIO()
+        filename = self.file.filename.lower()
+        
+        if filename.endswith('.csv'):
+            self.df.to_csv(output, index=False)
+            output.seek(0)
+            return output, 'text/csv', f"{filename.rsplit('.', 1)[0]}_with_status.csv"
+        elif filename.endswith(('.xls', '.xlsx')):
+            self.df.to_excel(output, index=False, engine='openpyxl')
+            output.seek(0)
+            return output, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', f"{filename.rsplit('.', 1)[0]}_with_status.xlsx"
+        else:
+            raise ValueError("Unsupported file type for output.")
