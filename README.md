@@ -136,13 +136,39 @@ pip install -r requirements.txt
   MODEL = "Your_Prefered_Model"
   
   ```
-### 6. Run the application
+
+### 6. Install Xampp MySQL
+[Download Xampp](https://www.apachefriends.org/download.html)
+
+### 7. Create Database and table for the project
+**Create database:**
+
+```sql
+CREATE DATABASE smart_resume_analyzer;
+USE smart_resume_analyzer;
+```
+**Create table:**
+```sql
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    phone VARCHAR(20) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### 8. Run the application
 
 ```bash
 uvicorn main:app --reload
 ```
 
-### 7. Access the App
+### 9. Access the App
 **Open your browser and go to:**
 
 ```cpp
