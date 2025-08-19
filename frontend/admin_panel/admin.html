@@ -16,6 +16,9 @@
                 <li><a href="#" id="usersLink">Users</a></li>
             </ul>
         </nav>
+    <div class="logout-container" id="logoutBtn">
+        <h1>Logout</h1>
+    </div>
     </aside>
 
     <!-- Main Content -->
@@ -39,7 +42,13 @@
             </div>
             <div class="charts-container">
                 <canvas id="barChart"></canvas>
-                <canvas id="pieChart"></canvas>
+                <canvas id="pieChart"  class="piechart"></canvas>
+                <section id="timeGraphSection" class="chart--section">
+  <h2>User Growth Over Time</h2>
+  <div class="chart--wrap" id="chart--wrap"></div>
+  
+</section>
+
             </div>
         </section>
 
@@ -93,6 +102,7 @@
     </main>
 
     <script src="admin.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
 
 
 </body>

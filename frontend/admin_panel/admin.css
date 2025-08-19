@@ -15,6 +15,10 @@
     top: 0;
     left: 0;
     padding-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
 }
 .sidebar ul {
     list-style: none;
@@ -32,6 +36,12 @@
 .sidebar ul li a:hover,
 .sidebar ul li a.active {
     background-color: #329D9C;
+}
+.logout-container{
+    padding: 20px;
+    text-align: center;
+     color: #fff;
+     cursor: pointer;
 }
 
 /* Main Content */
@@ -140,4 +150,87 @@ tbody tr:hover { background-color: #f1f9f9; }
 
 #logoutBtn:hover {
     background-color: #c0392b;
+}
+.piechart {
+height: 0% !important;
+}
+.barChart{
+    height: 0% !important;
+}
+
+
+/* Time Graph Section */
+.chart--section {
+    margin: 2rem auto;
+    width: 100%;
+    max-width: 900px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.chart--wrap {
+    margin: auto;
+    padding: 0 1rem;
+    width: calc(100% - 2rem);
+}
+
+.chart--wrap svg {
+    margin-top: 1rem;
+    width: 100%;
+    height: 300px;
+}
+
+.chart--wrap .y-axis,
+.chart--wrap .x-axis {
+    font-size: 0.75rem;
+    font-family: sans-serif;
+    color: #205072;
+}
+
+.chart--wrap .x-axis .domain {
+    opacity: 0;
+}
+
+.chart--wrap .y-axis path,
+.chart--wrap .y-axis .tick line {
+    opacity: 0;
+}
+
+.chart--wrap .grid .domain {
+    opacity: 0;
+}
+
+.chart--wrap .grid line {
+    stroke: #ccc;
+    stroke-dasharray: 3,3;
+}
+
+.chart--wrap .legend {
+    margin-top: 10px;
+}
+
+.chart--wrap .legend--ul {
+    padding-left: 0;
+    list-style-type: none;
+    display: flex;
+    gap: 15px;
+}
+
+.chart--wrap .legend--ul-li {
+    display: flex;
+    align-items: center;
+}
+
+.chart--wrap .legend--span-line {
+    margin-right: 5px;
+    width: 20px;
+    height: 3px;
+    display: block;
+}
+
+.chart--wrap .legend--span-label {
+    font-size: .875rem;
+    font-family: sans-serif;
 }

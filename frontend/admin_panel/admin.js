@@ -6,6 +6,7 @@ const usersSection = document.getElementById("usersSection");
 const usersTableBody = document.getElementById("dataPopulate");
 const editUserModal = document.getElementById("editUserModal");
 const editUserForm = document.getElementById("editUserForm");
+const Logout = document.getElementById("logoutBtn");
 
 let users = [];
 let currentUserId = null;
@@ -102,6 +103,8 @@ function updateDashboard(users) {
     });
 }
 
+
+
 // Edit Modal
 function openEditModal(user){
     currentUserId = user.id;
@@ -167,6 +170,10 @@ async function deleteUser(id){
         }
     }
 }
+Logout.addEventListener("click", () => {
+    window.location.href = "/frontend/login_page/login.html"; 
+});
+
 
 // Initial fetch
 fetchUsers();
