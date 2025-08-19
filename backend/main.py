@@ -25,7 +25,7 @@ app.add_middleware(
     allow_origins=["http://127.0.0.1:5500"],  # Allows requests from the specified origins
     allow_credentials=True,
     allow_methods=["*"],  # Allows all HTTP methods
-    allow_headers=["*"],  # Allows all headers
+    allow_headers=["*"],  
 )
 app.include_router(api)
 

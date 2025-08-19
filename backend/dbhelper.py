@@ -55,6 +55,11 @@ class DBHelper:
         rows = self.mycursor.fetchall()
         return [dict(row) for row in rows]  # convert sqlite3.Row → dict
     
+    def get_user_by_id(self, user_id):
+        query = "SELECT * FROM users WHERE id = %s"
+        self.mycursor.execute(query, (user_id,))
+        return self.mycursor.fetchone()
+    
     def update_user(self, user_id: int, data: dict):
         query = """
         UPDATE users

@@ -133,6 +133,7 @@ tbody tr:hover { background-color: #f1f9f9; }
 .modal button:hover { opacity: 0.8; }
 
 /* Logout Button */
+/* Logout Button */
 #logoutBtn {
     position: absolute;
     bottom: 20px;
@@ -150,12 +151,6 @@ tbody tr:hover { background-color: #f1f9f9; }
 
 #logoutBtn:hover {
     background-color: #c0392b;
-}
-.piechart {
-height: 0% !important;
-}
-.barChart{
-    height: 0% !important;
 }
 
 
