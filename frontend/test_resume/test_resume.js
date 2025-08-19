@@ -66,6 +66,7 @@ async function analyzeResume() {
         <h3>Resume Analysis Result:</h3>
         <p>${text}</p>
       `;
+      
       loading.style.display = "none";
       document.getElementById("resultPanel").style.display = "block";
     } else {

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Test Resume</title>
   <link rel="stylesheet" href="test_resume.css" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="./test_resume.js"></script>
 </head>
 <body>
@@ -48,8 +49,12 @@
 
   <!-- Result Section -->
   <div class="result-panel" id="resultPanel">
-    <div id="resultContent">Results will appear here.</div>
+  <div id="resultContent">Results will appear here.</div>
+  <div class="button-section">
+    <button type="button" class="teal-btn" onclick="location.reload()">⬅ Back</button>
   </div>
+</div>
+
 
   <!-- Loading Indicator -->
   <div id="loading" style="display: none">
