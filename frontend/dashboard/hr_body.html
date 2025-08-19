@@ -35,9 +35,10 @@
         <br>
     </div>
     <!-- Loading Start -->
+    <!-- Loading Start -->
     <div id="loading11" style="display: none; margin: 10%;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 150">
-          <path
+        <path
             fill="none"
             stroke="#FF156D"
             stroke-width="15"
@@ -45,19 +46,24 @@
             stroke-dasharray="300 385"
             stroke-dashoffset="0"
             d="M275 75c0 31-27 50-50 50-58 0-92-100-150-100-28 0-50 22-50 50s23 50 50 50c58 0 92-100 150-100 24 0 50 19 50 50Z"
-          >
+        >
             <animate
-              attributeName="stroke-dashoffset"
-              calcMode="spline"
-              dur="2"
-              values="685;-685"
-              keySplines="0 0 1 1"
-              repeatCount="indefinite"
+            attributeName="stroke-dashoffset"
+            calcMode="spline"
+            dur="2"
+            values="685;-685"
+            keySplines="0 0 1 1"
+            repeatCount="indefinite"
             ></animate>
-          </path>
+        </path>
         </svg>
-        <p>Analysing All CVs...</p>
-      </div>
+        
+        <!-- Add these two elements -->
+        <p id="loadingMessage">Analysing All CVs...</p>
+        <div id="progressBar" style="width: 100%; background: #eee; height: 15px; border-radius: 8px; margin-top: 10px;">
+            <div id="progressFill" style="width: 0%; height: 100%; background-color: #329D9C; border-radius: 8px;"></div>
+        </div>
+    </div>
     <!-- Loading End -->
     <div id="table12" class="container" style="width: 80%; margin: 0 10%; padding: 20px; background-color: #ffffff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); display: none;">
         <h1 style="font-size: 2rem; color: #333; text-align: center; margin-bottom: 20px;">Results</h1>
@@ -74,11 +80,12 @@
                     
                 </tbody>
             </table>
-            <button id="extract_trig" style="padding: 8px 16px; font-size: 14px; cursor: pointer; border: none; border-radius: 4px; background-color: #008CBA; color: white; display: block; margin: 20px auto; transition: background-color 0.3s ease;"
-            onmouseover="this.style.backgroundColor='#007bb5'" onmouseout="this.style.backgroundColor='#008CBA'">Extract</button>
-            
-        </div>
-    </div>
+            <div class="buttons-row">
+    <button id="save_btn" class="table-btn">Save</button>
+    <button id="back" class="table-btn" onclick="location.reload()">Back</button>
+</div>
+
+</div>
     <script src="hr_body.js"></script>
 </body>
 </html>

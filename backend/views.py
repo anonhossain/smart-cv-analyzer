@@ -152,3 +152,22 @@ def update_user(user_id: int, user: UserUpdate):
         raise HTTPException(status_code=500, detail="Failed to update user")
 
     return UserOut(id=user_id, **user.dict())
+
+from fastapi import FastAPI
+from fastapi.responses import FileResponse
+import os
+
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # backend/
+UPLOAD_DIR = os.path.join(BASE_DIR, "..", "output", "selected_cvs")
+
+@api.get("/api/download_cv/{cv_name}")
+async def download_cv(cv_name: str):
+    cv_path = os.path.join(UPLOAD_DIR, cv_name)
+    if not os.path.exists(cv_path):
+        return {"error": "File not found"}
+    return FileResponse(cv_path, filename=cv_name)
+
+
+

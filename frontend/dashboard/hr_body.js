@@ -1,5 +1,9 @@
 let selectedCV = [];
 
+document.addEventListener("DOMContentLoaded", function () {
+//all codes
+});
+
 // ------------------ File Upload ------------------
 document.getElementById("upload-form").addEventListener("submit", async (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
@@ -184,8 +188,8 @@ document.getElementById("generateQuestion").addEventListener("click", async func
     loadingMessage.style.fontWeight = "bold";
 
     try {
-        const response = await fetch("http://localhost:8080/api/generate_hr_questions", {
-            method: "GET",
+        const response = await fetch("http://localhost:8080/api/generate-hr-questions", {
+            method: "POST",
             headers: { "Content-Type": "application/json" }
         });
 
@@ -223,3 +227,31 @@ document.getElementById("generateQuestion").addEventListener("click", async func
         loading.style.display = "none";
     }
 });
+
+// ------------------ Save Selected CVs Individually ------------------
+    const saveBtn = document.getElementById("save_btn");
+    if (saveBtn) {
+        saveBtn.addEventListener("click", async function () {
+            if (selectedCV.length === 0) {
+                alert("No CVs selected to save!");
+                return;
+            }
+
+            try {
+                for (let cvName of selectedCV) {
+                    const link = document.createElement("a");
+                    link.href = `http://localhost:8080/api/download_cv/${encodeURIComponent(cvName)}`;
+                    link.download = cvName;
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                }
+                alert("Selected CVs downloaded successfully!");
+            } catch (error) {
+                console.error("Error saving CVs:", error);
+                alert("Failed to save CVs. Please try again.");
+            }
+        });
+    }
+
+

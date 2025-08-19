@@ -18,7 +18,8 @@ app.mount(
 )
 
 # Allow frontend to communicate with backend (adjust origin if needed)
-origins = ["http://127.0.0.1:5500/",]
+origins = ["http://127.0.0.1:5500/",
+           "http://localhost:8080"]
 # Set up CORS middleware
 app.add_middleware(
     CORSMiddleware,
