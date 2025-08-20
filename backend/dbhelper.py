@@ -1,4 +1,4 @@
-from copy import Error
+from mysql.connector import Error
 from fastapi import HTTPException
 import mysql.connector
 
@@ -40,20 +40,11 @@ class DBHelper:
         data = self.mycursor.fetchall()
         return data
     
-    def search(self, identifier, password):
-        # Searching by email, phone, or username
-        self.mycursor.execute("""
-        SELECT * FROM users WHERE (email = %s OR phone = %s OR username = %s) AND password = %s
-        """, (identifier, identifier, identifier, password))
-
-        data = self.mycursor.fetchall()
-        return data
-    
     # Fetch all users
     def get_all_users(self):
         self.mycursor.execute("SELECT * FROM users")
         rows = self.mycursor.fetchall()
-        return [dict(row) for row in rows]  # convert sqlite3.Row → dict
+        return [dict(row) for row in rows]  # convert to dict
     
     def get_user_by_id(self, user_id):
         query = "SELECT * FROM users WHERE id = %s"
@@ -81,4 +72,16 @@ class DBHelper:
             return True
         except Error as e:
             print("DB update error:", e)
+            return False
+
+    # New delete_user function
+    def delete_user(self, user_id: int):
+        query = "DELETE FROM users WHERE id = %s"
+        try:
+            self.mycursor.execute(query, (user_id,))
+            self.conn.commit()
+            return True
+        except Error as e:
+            print("DB delete error:", e)
+            self.conn.rollback()  # Rollback on error
             return False

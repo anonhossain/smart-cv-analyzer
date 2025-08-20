@@ -12,32 +12,54 @@ document.addEventListener("DOMContentLoaded", () => {
     let users = [];
     let currentUserId = null;
 
-    // Switch sections
-    dashboardLink.addEventListener("click", () => {
-        dashboardSection.style.display = "block";
-        usersSection.style.display = "none";
-        dashboardLink.classList.add("active");
-        usersLink.classList.remove("active");
+    // Function to show the correct section based on hash
+    function showSection() {
+        const hash = window.location.hash || "#dashboard"; // Default to dashboard if no hash
+        if (hash === "#users") {
+            dashboardSection.style.display = "none";
+            usersSection.style.display = "block";
+            dashboardLink.classList.remove("active");
+            usersLink.classList.add("active");
+        } else {
+            dashboardSection.style.display = "block";
+            usersSection.style.display = "none";
+            dashboardLink.classList.add("active");
+            usersLink.classList.remove("active");
+        }
+    }
+
+    // Switch sections and update URL hash
+    dashboardLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location.hash = "dashboard";
+        showSection();
     });
 
-    usersLink.addEventListener("click", () => {
-        dashboardSection.style.display = "none";
-        usersSection.style.display = "block";
-        dashboardLink.classList.remove("active");
-        usersLink.classList.add("active");
+    usersLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location.hash = "users";
+        showSection();
     });
+
+    // Listen for hash changes (e.g., back/forward navigation or refresh)
+    window.addEventListener("hashchange", showSection);
+
+    // Show the correct section on initial load
+    showSection();
 
     // Fetch users from backend
     async function fetchUsers() {
         try {
-            const res = await fetch("http://localhost:8080/api/users");
+            const url = `http://localhost:8080/api/users?t=${Date.now()}`; // Cache-busting timestamp
+            const res = await fetch(url, { cache: "no-cache" });
             if (!res.ok) throw new Error("Failed to fetch users");
             users = await res.json();
+            console.log("Fetched users:", users); // For debugging
             populateTable(users);
             updateDashboard(users);
         } catch (err) {
-            console.error(err);
-            alert("Error fetching users: " + err.message);
+        console.error(err);
+        alert("Error fetching users: " + err.message);
         }
     }
 
@@ -82,27 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if(totalHREl) totalHREl.textContent = totalHR;
         if(totalCandidateEl) totalCandidateEl.textContent = totalCandidate;
 
-        // Destroy old charts if they exist
-        if (window.barChartInstance) window.barChartInstance.destroy();
+        // Destroy old pie chart if it exists
         if (window.pieChartInstance) window.pieChartInstance.destroy();
-        if (window.lineChartInstance) window.lineChartInstance.destroy();
-
-        // Bar Chart
-        const ctxBarEl = document.getElementById("barChart");
-        if(ctxBarEl) {
-            const ctxBar = ctxBarEl.getContext("2d");
-            window.barChartInstance = new Chart(ctxBar, {
-                type: "bar",
-                data: {
-                    labels: ["Admin", "HR", "Candidate"],
-                    datasets: [{
-                        label: "Users",
-                        data: [totalAdmin, totalHR, totalCandidate],
-                        backgroundColor: ["#205072","#329D9C","#7BE495"]
-                    }]
-                }
-            });
-        }
 
         // Pie Chart
         const ctxPieEl = document.getElementById("pieChart");
@@ -116,63 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         data: [totalAdmin, totalHR, totalCandidate],
                         backgroundColor: ["#205072","#329D9C","#7BE495"]
                     }]
-                }
-            });
-        }
-
-        // Line Chart - Monthly User Growth by Role
-        const ctxLineEl = document.getElementById("lineChart");
-        if(ctxLineEl) {
-            const growthData = { Admin: {}, HR: {}, Candidate: {} };
-
-            // Aggregate monthly counts with normalized role
-            users.forEach(u => {
-                if (u.created_at && u.role) {
-                    const roleKey = u.role.toLowerCase() === "admin" ? "Admin" :
-                                    u.role.toLowerCase() === "hr" ? "HR" :
-                                    u.role.toLowerCase() === "candidate" ? "Candidate" :
-                                    null;
-                    if (!roleKey) return; // skip unknown roles
-
-                    const date = new Date(u.created_at);
-                    const monthKey = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}`;
-
-                    if (!growthData[roleKey][monthKey]) growthData[roleKey][monthKey] = 0;
-                    growthData[roleKey][monthKey]++;
-                }
-            });
-
-            // Get all months sorted
-            const allMonthsSet = new Set([
-                ...Object.keys(growthData.Admin),
-                ...Object.keys(growthData.HR),
-                ...Object.keys(growthData.Candidate)
-            ]);
-            const allMonths = Array.from(allMonthsSet).sort();
-
-            // Counts for each role
-            const adminCounts = allMonths.map(m => growthData.Admin[m] || 0);
-            const hrCounts = allMonths.map(m => growthData.HR[m] || 0);
-            const candidateCounts = allMonths.map(m => growthData.Candidate[m] || 0);
-
-            const ctxLine = ctxLineEl.getContext("2d");
-            window.lineChartInstance = new Chart(ctxLine, {
-                type: "line",
-                data: {
-                    labels: allMonths,
-                    datasets: [
-                        { label: "Admin", data: adminCounts, borderColor: "#205072", fill: false, tension: 0.1 },
-                        { label: "HR", data: hrCounts, borderColor: "#329D9C", fill: false, tension: 0.1 },
-                        { label: "Candidate", data: candidateCounts, borderColor: "#7BE495", fill: false, tension: 0.1 }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { position: 'top' } },
-                    scales: {
-                        x: { title: { display: true, text: 'Month' } },
-                        y: { title: { display: true, text: 'Number of Users' }, beginAtZero: true }
-                    }
                 }
             });
         }
@@ -216,8 +162,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert("User updated successfully!");
                 closeEditModal();
                 fetchUsers();
+                console.log("Update successful, refetching users"); // Added for debugging
             } else {
                 alert("Failed to update user");
+                console.error("Update failed with status:", res.status); // Added for debugging
             }
         } catch (err) {
             console.error(err);

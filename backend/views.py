@@ -2,7 +2,7 @@ import os
 from pyexpat import model
 import re
 from typing import List
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, File, Form, HTTPException, Response, UploadFile
 from fastapi.responses import JSONResponse
 from user_controller import UserController
 from dbhelper import DBHelper
@@ -158,3 +158,14 @@ def update_user(user_id: int, user: UserUpdate):
         raise HTTPException(status_code=500, detail="Failed to update user")
 
     return UserOut(id=user_id, **user.dict())
+
+# New DELETE endpoint
+@api.delete("/users/{user_id}", status_code=204)
+def delete_user(user_id: int):
+    if not db.get_user_by_id(user_id):
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if not db.delete_user(user_id):
+        raise HTTPException(status_code=500, detail="Failed to delete user")
+
+    return Response(status_code=204)
