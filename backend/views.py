@@ -1,5 +1,6 @@
 import os
 from pyexpat import model
+import re
 from typing import List
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
@@ -11,6 +12,7 @@ from emailsender import EmailSender
 from resume_extractor import ResumeExtractor
 from clear_files import clear_all_uploads
 from file_uploader import save_candidate_files, save_hr_files
+from urllib.parse import unquote
 
 api = APIRouter(prefix="/api")
 
@@ -156,22 +158,3 @@ def update_user(user_id: int, user: UserUpdate):
         raise HTTPException(status_code=500, detail="Failed to update user")
 
     return UserOut(id=user_id, **user.dict())
-
-from fastapi import FastAPI
-from fastapi.responses import FileResponse
-import os
-
-
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # backend/
-UPLOAD_DIR = os.path.join(BASE_DIR, "..", "output", "selected_cvs")
-
-@api.get("/api/download_cv/{cv_name}")
-async def download_cv(cv_name: str):
-    cv_path = os.path.join(UPLOAD_DIR, cv_name)
-    if not os.path.exists(cv_path):
-        return {"error": "File not found"}
-    return FileResponse(cv_path, filename=cv_name)
-
-
-

@@ -31,6 +31,37 @@ document.getElementById("upload-form").addEventListener("submit", async (event) 
     }
 });
 
+// Function to convert the table data into CSV format
+function tableToCSV() {
+    const table = document.querySelector('table');
+    const rows = Array.from(table.rows);
+    let csvContent = "";
+
+    rows.forEach(row => {
+        const cells = Array.from(row.cells);
+        const cellValues = cells.map(cell => cell.textContent.trim());
+        csvContent += cellValues.join(",") + "\n";
+    });
+
+    return csvContent;
+}
+
+// Function to download the CSV file
+function downloadCSV() {
+    const csvContent = tableToCSV();
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'resume_analysis_results.csv';
+    link.click();
+}
+
+// Event listener for the save button
+document.getElementById('save_btn').addEventListener('click', function() {
+    downloadCSV();
+});
+
+
 
 // ------------------ Analyze Existing Resumes ------------------
 document.getElementById("analyze_existing").addEventListener("click", async function () {
@@ -59,6 +90,7 @@ document.getElementById("analyze_existing").addEventListener("click", async func
 
         let rowID = 0;
         for (let [key, value] of Object.entries(result.data)) {  // ✅ backend returns "data"
+            console.log("CV Name:", result.data);
             const newRow = document.createElement("tr");
             const id = "row" + rowID;
             newRow.setAttribute("id", id);
@@ -133,49 +165,6 @@ document.getElementById("extract_trig").addEventListener("click", async function
     }
 });
 
-
-// ------------------ Extract Info via Button ------------------
-document.querySelector('button[name="action"][value="extract_info"]').addEventListener('click', async () => {
-    try {
-        // Fetch filenames from the server
-        const filenamesResponse = await fetch('http://localhost:8080/api/extract_resume_info/', {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify([])  // send empty body if backend doesn't need input
-        });
-
-        const filenamesData = await filenamesResponse.json();
-
-        if (filenamesData.error) {
-            console.error("Error fetching filenames:", filenamesData.error);
-            alert("Failed to retrieve resume filenames.");
-            return;
-        }
-
-        const fileNames = filenamesData.filenames;
-
-        // Send filenames to extract_resume_info API
-        const response = await fetch('http://localhost:8080/api/extract_resume_info/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(fileNames)
-        });
-
-        if (!response.ok) throw new Error(`Failed to extract resume info: ${response.status}`);
-
-        const data = await response.json();
-        console.log("Extracted Resume Info:", data);
-
-        document.getElementById("resumeResult").innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
-
-        alert("All information extracted and saved.");
-    } catch (error) {
-        console.error("Error:", error);
-        alert("Failed to extract information. Please try again.");
-    }
-});
-
-
 // ------------------ Generate Questions ------------------
 document.getElementById("generateQuestion").addEventListener("click", async function () {
     const loading = document.getElementById("loading11");
@@ -227,31 +216,3 @@ document.getElementById("generateQuestion").addEventListener("click", async func
         loading.style.display = "none";
     }
 });
-
-// ------------------ Save Selected CVs Individually ------------------
-    const saveBtn = document.getElementById("save_btn");
-    if (saveBtn) {
-        saveBtn.addEventListener("click", async function () {
-            if (selectedCV.length === 0) {
-                alert("No CVs selected to save!");
-                return;
-            }
-
-            try {
-                for (let cvName of selectedCV) {
-                    const link = document.createElement("a");
-                    link.href = `http://localhost:8080/api/download_cv/${encodeURIComponent(cvName)}`;
-                    link.download = cvName;
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
-                }
-                alert("Selected CVs downloaded successfully!");
-            } catch (error) {
-                console.error("Error saving CVs:", error);
-                alert("Failed to save CVs. Please try again.");
-            }
-        });
-    }
-
-
