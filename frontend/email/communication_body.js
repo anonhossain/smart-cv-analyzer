@@ -71,3 +71,8 @@ document.getElementById("mail-sms-form").addEventListener("submit", async functi
         alert("Failed to submit form. Please try again.");
     }
 });
+
+document.querySelector('.back-button').addEventListener('click', function(e) {
+    e.preventDefault();  // Prevent form validation and alert on back button click
+    window.history.back();  // Proceed with the back navigation
+});
