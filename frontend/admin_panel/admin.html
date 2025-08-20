@@ -16,9 +16,9 @@
                 <li><a href="#" id="usersLink">Users</a></li>
             </ul>
         </nav>
-    <div class="logout-container" id="logoutBtn">
-        <h1>Logout</h1>
-    </div>
+        <div class="logout-container" id="logoutBtn">
+            <h1>Logout</h1>
+        </div>
     </aside>
 
     <!-- Main Content -->
@@ -40,13 +40,8 @@
                     <p id="totalCandidate">0</p>
                 </div>
             </div>
-            <div class="charts-container">
-                <canvas id="barChart"></canvas>
-                <canvas id="pieChart"  class="piechart"></canvas>
-                <canvas id="lineChart"></canvas>
-  
-</section>
-
+            <div class="charts-container" style="display: flex; justify-content: center;">
+                <canvas id="pieChart" class="piechart" style="max-width: 500px; max-height: 500px;"></canvas>
             </div>
         </section>
 
@@ -100,6 +95,6 @@
     </main>
 
     <script src="admin.js"></script>
-<script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 </body>
 </html>
