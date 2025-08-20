@@ -50,14 +50,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // Fetch users from backend
     async function fetchUsers() {
         try {
-            const res = await fetch("http://localhost:8080/api/users");
+            const url = `http://localhost:8080/api/users?t=${Date.now()}`; // Cache-busting timestamp
+            const res = await fetch(url, { cache: "no-cache" });
             if (!res.ok) throw new Error("Failed to fetch users");
             users = await res.json();
+            console.log("Fetched users:", users); // For debugging
             populateTable(users);
             updateDashboard(users);
         } catch (err) {
-            console.error(err);
-            alert("Error fetching users: " + err.message);
+        console.error(err);
+        alert("Error fetching users: " + err.message);
         }
     }
 
@@ -160,8 +162,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert("User updated successfully!");
                 closeEditModal();
                 fetchUsers();
+                console.log("Update successful, refetching users"); // Added for debugging
             } else {
                 alert("Failed to update user");
+                console.error("Update failed with status:", res.status); // Added for debugging
             }
         } catch (err) {
             console.error(err);
