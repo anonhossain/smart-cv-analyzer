@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Update Dashboard Cards and Charts
     function updateDashboard(users) {
-        const totalAdmin = users.filter(u => u.role === "Admin").length;
+        const totalAdmin = users.filter(u => u.role.toLowerCase() === "admin").length;
         const totalHR = users.filter(u => u.role === "HR").length;
         const totalCandidate = users.filter(u => u.role === "Candidate").length;
 
