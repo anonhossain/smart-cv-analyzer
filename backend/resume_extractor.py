@@ -11,11 +11,11 @@ import pandas as pd
 # Load environment variables
 load_dotenv()
 
-HR_CV_FILES = os.getenv('HR_CV_FILES')  # Directory where the PDFs are stored
-OUTPUT_DIRECTORY = os.getenv('OUTPUT_DIRECTORY')  # Directory where CSV will be saved
+#HR_CV_FILES = os.getenv('HR_CV_FILES')  # Directory where the PDFs are stored
+#OUTPUT_DIRECTORY = os.getenv('OUTPUT_DIRECTORY')  # Directory where CSV will be saved
 
-# OUTPUT_DIRECTORY = "./output"  # Directory where CSV will be saved
-# HR_CV_FILES= "./uploads/hr/cv/"  # Directory where the PDFs are stored
+OUTPUT_DIRECTORY = "./output"  # Directory where CSV will be saved
+HR_CV_FILES= "./uploads/hr/cv/"  # Directory where the PDFs are stored
 
 os.makedirs(OUTPUT_DIRECTORY, exist_ok=True)  # Ensure the output directory exists
 

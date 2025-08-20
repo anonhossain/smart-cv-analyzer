@@ -16,6 +16,10 @@ api = APIRouter(prefix="/api")
 
 db = DBHelper()
 
+@api.get("/")
+def read_root():
+    return {"msg": "Hello, CORS is working!"}
+
 @api.get("/hello")
 def hello():
     return {"message": "Hello, Anon!"}

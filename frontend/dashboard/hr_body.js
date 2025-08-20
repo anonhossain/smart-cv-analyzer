@@ -195,7 +195,7 @@ document.getElementById("generateQuestion").addEventListener("click", async func
 
         if (!response.ok) {
             const errorData = await response.json();
-            alert(`Error: ${errorData.message || "Unknown error occurred."}`);
+            alert(`Error: ${errorData.message || "Generating Questions"}`);
         } else {
             const reader = response.body.getReader();
             const decoder = new TextDecoder();

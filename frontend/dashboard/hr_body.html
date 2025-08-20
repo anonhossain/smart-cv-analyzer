@@ -12,11 +12,11 @@
         <form id="upload-form" method="post" enctype="multipart/form-data">
             <div class="input-section">
                 <label for="job-description">Job Description:</label>
-                <textarea id="job-description" name="job_desc" placeholder="Enter the job description here..."></textarea>
+                <textarea id="job-description" name="jd_text" placeholder="Enter the job description here..."></textarea>
             </div>
             <div class="input-section">
                 <label for="resume-upload">Upload Resume (PDF):</label>
-                <input type="file" id="resume-upload" name="resumes" accept="application/pdf" multiple>
+                <input type="file" id="resume-upload" name="pdf_files" accept="application/pdf" multiple>
             </div>
             <div class="button-section">
                 <button class="btn" type="submit">Upload Files</button>
@@ -27,7 +27,7 @@
             <button id="analyze_existing" class="btn" type="submit">Analyze CV</button>
         </div>
         <br>
-        <button class="smbtn" type="button" name="action" value="extract_info">Extract Information</button>
+        <button id="extract_trig" class="smbtn" type="button" name="action" value="extract_info">Extract Information</button>
         <a href="..\email\comunication_body.html"><button class="smbtn" type="button" name="action" value="send_mails">Send Mail</button></a>
         <button id="generateQuestion" class="smbtn" type="button" name="action" value="generate_questions">Generate Questions</button>
         

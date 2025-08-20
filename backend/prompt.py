@@ -6,6 +6,7 @@ def candidate_match_prompt(job_desc, resume_text):
         write the main key skills and project missing from the CV for that job write it in short points. 
         Then create viva questions that could be asked based on the skills, job role, previous experience, and projects mentioned in the CV. Also, generate technical questions from CV projects and experience.
 
+        Here your message will be directly print in front end. So ensure proper new lines and breaks
         Job Description:
         {job_desc}
 
