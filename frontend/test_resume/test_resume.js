@@ -53,20 +53,57 @@ async function analyzeResume() {
       // alert("Resume analysis successful");
       // var text = JSON.stringify(data.response);
       var text = data.data;
-      text = text.replace(/\\n/g, "<br>");
-      text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-      text = text.replace(/\*(.*?)\*/g, "<em>$1</em>");
+      // text = text.replace(/\\n/g, "<br>");
+      // text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+      // text = text.replace(/\*(.*?)\*/g, "<em>$1</em>");
+      // text = text.replace(/__(.*?)__/g, "<u>$1</u>");
+      // text = text.replace('"', " ");
+      // text = text.replace(/\\"/g, ' " ');
+      var text = data.data;
+
+      console.log(text);
+
+
+      // Headings (## Heading)
+      text = text.replace(/^## (.*?)$/gm, "<h2 style='margin-top:15px;'>$1</h2>");
+
+      // Subheadings (### Heading)
+      text = text.replace(/^### (.*?)$/gm, "<h3 style='margin-top:10px;'>$1</h3>");
+
+      // // Bold text
+      // text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+      // // Remove single asterisks (for list points)
+      // text = text.replace(/^\* (.*)/gm, "<li>$1</li>");
+
+      // Wrap <li> groups inside <ul>
+      text = text.replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>");
+
+      // Underline text
       text = text.replace(/__(.*?)__/g, "<u>$1</u>");
-      text = text.replace('"', " ");
-      text = text.replace(/\\"/g, ' " ');
+
+      // Line breaks (but avoid breaking inside <li>)
+      text = text.replace(/\n(?!<li>)/g, "<br>");
+
+      // Clean escaped quotes
+      text = text.replace(/\\"/g, '"');
+
+      // 1. Bold text with double asterisks (keep as <strong>)
+      text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+      // 2. Triple asterisks or more → remove only the first one
+      text = text.replace(/^\s*\*{3,}\s*/gm, "");
+
+      // 3. Single asterisk (bullet points) → remove it
+      text = text.replace(/^\s*\*\s*/gm, "");
 
       // Dynamically display the result on the frontend
       const resultContainer = document.getElementById("resultContent");
       resultContainer.innerHTML = `
         <h3>Resume Analysis Result:</h3>
-        <p>${text}</p>
+        <p class="p-10">${text}</p>
       `;
-      
+
       loading.style.display = "none";
       document.getElementById("resultPanel").style.display = "block";
     } else {

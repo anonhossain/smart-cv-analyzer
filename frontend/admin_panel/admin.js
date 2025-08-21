@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const editUserModal = document.getElementById("editUserModal");
     const editUserForm = document.getElementById("editUserForm");
     const Logout = document.getElementById("logoutBtn");
+    const roleFilter = document.getElementById("roleFilter");
 
     let users = [];
     let currentUserId = null;
@@ -52,14 +53,37 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const url = `http://localhost:8080/api/users?t=${Date.now()}`; // Cache-busting timestamp
             const res = await fetch(url, { cache: "no-cache" });
+            console.log("Response:", res);
             if (!res.ok) throw new Error("Failed to fetch users");
             users = await res.json();
             console.log("Fetched users:", users); // For debugging
             populateTable(users);
             updateDashboard(users);
+            updateRoleCounts(users); // Update role counts after fetching users
         } catch (err) {
-        console.error(err);
-        alert("Error fetching users: " + err.message);
+            console.error(err);
+            alert("Error fetching users: " + err.message);
+        }
+    }
+
+    // Update Role Counts
+    function updateRoleCounts(users) {
+        const totalAdmin = users.filter(u => u.role.toLowerCase() === "admin").length;
+        const totalHR = users.filter(u => u.role === "HR").length;
+        const totalCandidate = users.filter(u => u.role === "Candidate").length;
+
+        document.getElementById("Admin").textContent = totalAdmin;
+        document.getElementById("HR").textContent = totalHR;
+        document.getElementById("Candidate").textContent = totalCandidate;
+    }
+
+    // Filter users based on role
+    function filterUsers(role) {
+        if (role === "All") {
+            populateTable(users);
+        } else {
+            const filteredUsers = users.filter(user => user.role === role);
+            populateTable(filteredUsers);
         }
     }
 
@@ -191,6 +215,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     }
+
+    // Role filter event listener
+    roleFilter.addEventListener("change", (e) => {
+        const selectedRole = e.target.value;
+        filterUsers(selectedRole);
+    });
 
     Logout.addEventListener("click", () => {
         window.location.href = "/frontend/login_page/login.html";

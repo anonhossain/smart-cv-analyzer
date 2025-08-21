@@ -1,8 +1,12 @@
 :root {
-  --c1:#205072; /* deep teal */
-  --c2:#329D9C; /* teal */
-  --c3:#7BE495; /* mint / light green */
-  --c4:#CFF4D2; /* pale green */
+  --c1: #205072;
+  /* deep teal */
+  --c2: #329D9C;
+  /* teal */
+  --c3: #7BE495;
+  /* mint / light green */
+  --c4: #CFF4D2;
+  /* pale green */
 }
 
 * {
@@ -25,16 +29,24 @@ body {
 }
 
 @keyframes gradientAnimation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* Container */
 .container {
   background-color: rgba(255, 255, 255, 0.9);
   border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   padding: 30px;
   width: 100%;
   max-width: 500px;
@@ -114,11 +126,26 @@ h2 {
   color: white;
 }
 
+.back-button {
+  margin-bottom: 15px;
+  outline: none;
+  background-color: transparent;
+  border: none;
+  color: #205072;
+  cursor: pointer;
+}
+
+.back-button svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
 /* Result panel */
 .result-panel {
-  background-color: rgba(255,255,255,0.95);
+  background-color: rgba(255, 255, 255, 0.95);
   border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   padding: 20px;
   margin-top: 20px;
   display: none;
