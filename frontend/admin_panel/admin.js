@@ -48,11 +48,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Show the correct section on initial load
     showSection();
 
-    // Fetch users from backend
+     // Fetch users from backend
     async function fetchUsers() {
         try {
-            const url = `http://localhost:8080/api/users?t=${Date.now()}`; // Cache-busting timestamp
-            const res = await fetch(url, { cache: "no-cache" });
+            const url = `http://localhost:8080/api/users`;
+            const res = await fetch(url);
             console.log("Response:", res);
             if (!res.ok) throw new Error("Failed to fetch users");
             users = await res.json();
@@ -185,7 +185,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (res.ok) {
                 alert("User updated successfully!");
                 closeEditModal();
-                fetchUsers();
+                //fetchUsers();
+                window.location.reload();
                 console.log("Update successful, refetching users"); // Added for debugging
             } else {
                 alert("Failed to update user");
