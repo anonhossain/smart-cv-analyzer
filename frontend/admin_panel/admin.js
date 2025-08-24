@@ -185,8 +185,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (res.ok) {
                 alert("User updated successfully!");
                 closeEditModal();
-                //fetchUsers();
-                window.location.reload();
+                fetchUsers();
+                windows
                 console.log("Update successful, refetching users"); // Added for debugging
             } else {
                 alert("Failed to update user");

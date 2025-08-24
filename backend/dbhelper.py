@@ -42,15 +42,20 @@ class DBHelper:
     
     # Fetch all users
     def get_all_users(self):
-        self.mycursor.execute("SELECT * FROM users")
-        rows = self.mycursor.fetchall()
-        return [dict(row) for row in rows]  # convert to dict
-    
+        cursor = self.conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM users")
+        rows = cursor.fetchall()
+        cursor.close()
+        return rows
+
     def get_user_by_id(self, user_id):
+        cursor = self.conn.cursor(dictionary=True)
         query = "SELECT * FROM users WHERE id = %s"
-        self.mycursor.execute(query, (user_id,))
-        return self.mycursor.fetchone()
-    
+        cursor.execute(query, (user_id,))
+        row = cursor.fetchone()
+        cursor.close()
+        return row
+
     def update_user(self, user_id: int, data: dict):
         query = """
         UPDATE users
@@ -66,22 +71,29 @@ class DBHelper:
             data["role"],
             user_id
         )
+        cursor = self.conn.cursor()
         try:
-            self.mycursor.execute(query, values)
+            cursor.execute(query, values)
             self.conn.commit()
+            cursor.close()
             return True
         except Error as e:
             print("DB update error:", e)
+            self.conn.rollback()
+            cursor.close()
             return False
 
     # New delete_user function
     def delete_user(self, user_id: int):
         query = "DELETE FROM users WHERE id = %s"
+        cursor = self.conn.cursor()
         try:
-            self.mycursor.execute(query, (user_id,))
+            cursor.execute(query, (user_id,))
             self.conn.commit()
+            cursor.close()
             return True
         except Error as e:
             print("DB delete error:", e)
-            self.conn.rollback()  # Rollback on error
+            self.conn.rollback()
+            cursor.close()
             return False
