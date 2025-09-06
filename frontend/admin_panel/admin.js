@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const usersLink = document.getElementById("usersLink");
     const dashboardSection = document.getElementById("dashboardSection");
     const usersSection = document.getElementById("usersSection");
-
+    // const cancelEditBtn = document.getElementById("cancelEditBtn");
     const usersTableBody = document.getElementById("dataPopulate");
     const editUserModal = document.getElementById("editUserModal");
     const editUserForm = document.getElementById("editUserForm");
@@ -12,6 +12,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let users = [];
     let currentUserId = null;
+
+    // Define closeEditModal in the global scope
+const cancelEditBtn = document.getElementById("cancelEditBtn");
+
+function closeEditModal() {
+    editUserModal.style.display = "none"; // Hide the modal
+    console.log("Closing edit modal"); // For debugging
+    currentUserId = null; // Reset the user ID
+}
+
+// Add an event listener to the Cancel button to call closeEditModal on click
+if (cancelEditBtn) {
+    cancelEditBtn.addEventListener("click", closeEditModal);
+}
 
     // Function to show the correct section based on hash
     function showSection() {
