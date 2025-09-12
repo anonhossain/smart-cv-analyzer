@@ -1,0 +1,66 @@
+About HireShire
+
+HireShire is a modern staffing and talent acquisition platform helping leading organizations find exceptional talent. We’re now expanding into the Data & Analytics vertical and are looking for curious, driven, and analytical minds to join us as part of our Data Science Internship Cohort.
+
+Role Overview
+
+As a Data Science Intern at HireShire, you will collaborate with our engineering and strategy teams to design data-driven solutions that power smarter hiring, workforce planning, and operational decision-making. This is a hands-on role where you’ll work on real business datasets to build production-ready analytics models and dashboards.
+
+Key Responsibilities
+
+Collect, clean, analyze, and transform structured & semi-structured HR and recruitment datasets
+Build predictive models for talent forecasting, attrition risk, and candidate success scores
+Develop data visualizations, dashboards, and reports using Python, SQL & BI tools
+Perform EDA (exploratory data analysis) to uncover insights that inform recruitment strategies
+Work with time-series & cohort data for trend analysis and performance metrics
+Deploy statistical and ML algorithms (regression, clustering, classification) in scalable pipelines
+Communicate findings & recommendations with clear visual and written formats to stakeholders
+
+Requirements
+
+Pursuing (or recently completed) B.Tech/BE/M.Tech/MSc in Data Science, Computer Science, Statistics, or related fields
+Proficiency in Python + core libraries (Pandas, NumPy, Matplotlib/Seaborn, Scikit-learn)
+Familiarity with SQL for querying relational datasets
+Sound understanding of ML fundamentals – supervised/unsupervised learning methods
+Strong statistics foundation – distributions, hypothesis testing, probability
+Ability to interpret data, derive insights, and present conclusions clearly
+Strong communication skills, ownership mindset & enthusiasm to learn
+
+Nice to Have (Bonus)
+
+Knowledge of BI tools (Power BI / Tableau / Looker / Metabase)
+Basics of cloud platforms (AWS/GCP/Azure) or Docker
+Prior exposure to HR analytics or recruitment datasets
+
+What You’ll Get
+
+Practical exposure to solving real-world data problems in HR Tech
+Experience working on high-impact product features used by recruiters and hiring managers
+1:1 mentorship by experienced data scientists and access to premium resources
+Internship Certificate & Letter of Recommendation upon successful completion
+Opportunity for a Pre-Placement Offer (PPO) at HireShire or client companies
+
+Hiring Process
+
+Online Application
+
+Submit CV, GitHub/Kaggle links, and a brief note on your interest and experience
+Technical Assessment
+
+Assignment to test Python, SQL, EDA, or modeling approach
+Technical Interview
+
+In-depth discussion (45 mins) on your ML/stats understanding & problem-solving
+Managerial Interview
+
+Evaluate communication skills, culture fit & motivation
+Offer
+
+Selected applicants receive the internship offer with stipend details & project allocation
+Onboarding
+
+Orientation, project assignment & setup with tools and mentors
+
+Stipend
+
+Minimum stipend starts at $19/hour, with the possibility of a higher rate based on performance in the interviews.
