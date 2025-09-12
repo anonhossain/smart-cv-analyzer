@@ -20,7 +20,7 @@ document.getElementById("loginForm").onsubmit = async function(e) {
             // console.log("Full response:", result); // Log the entire response to confirm structure
 
             // Exact match on role
-            if (result["user"]["role"] === "admin") {
+            if (result["user"]["role"] === "Admin") {
                 // alert("Admin login successful!");
                 window.location.href = "/frontend/admin_panel/admin.html"; // Redirect to admin page
             } else if (result["user"]["role"] === "HR") {
