@@ -21,8 +21,12 @@ classDiagram
     %% Communication Service
     class EmailSender {
         +String SMTP_SERVER
+        +String SMTP_USERNAME
+        +String SMTP_PASSWORD
         +String subject
         +UploadFile file
+        +String email_col
+        +String email_message
         +read_file() async
         +replace_placeholders(message, row) String
         +send_bulk_emails() async
