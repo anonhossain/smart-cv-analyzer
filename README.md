@@ -4,7 +4,7 @@ CV Tutor is a smart AI-based web application that enhances job applications for 
 
 ---
 
-## Architecture
+## 👨‍💻 Architecture
 
 ```mermaid
 classDiagram
