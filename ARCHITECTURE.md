@@ -1,6 +1,6 @@
 ```mermaid
-
 classDiagram
+    %% Inheritance for AI Logic
     class BaseCVProcessor {
         +Config config
         +extract_text_from_pdf(file_path) String
@@ -10,6 +10,7 @@ classDiagram
 
     class CVRanker {
         +rank_cvs(results_list) List
+        +get_top_candidates(n) List
     }
 
     class QuestionGenerator {
@@ -17,5 +18,17 @@ classDiagram
         +save_to_disk(filename, content) bool
     }
 
-    BaseCVProcessor <|-- CVRanker : inherits
-    BaseCVProcessor <|-- QuestionGenerator : inherits
+    %% Communication Service
+    class EmailSender {
+        +String SMTP_SERVER
+        +String subject
+        +UploadFile file
+        +read_file() async
+        +replace_placeholders(message, row) String
+        +send_bulk_emails() async
+    }
+
+    %% Relationships
+    BaseCVProcessor <|-- CVRanker : Inheritance
+    BaseCVProcessor <|-- QuestionGenerator : Inheritance
+    CVRanker ..> EmailSender : Uses for notification
