@@ -1,5 +1,13 @@
 from fastapi import HTTPException
-from dbhelper import DBHelper
+import os
+import sys
+
+_ROOT_SRC = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if _ROOT_SRC not in sys.path:
+    sys.path.insert(0, _ROOT_SRC)
+
+from backend.database.db_helper import DBHelper
+
 
 db = DBHelper()
 

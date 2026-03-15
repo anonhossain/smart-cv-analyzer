@@ -2,22 +2,12 @@ import os
 import shutil
 from typing import List
 from fastapi import UploadFile
-from dotenv import load_dotenv
+from backend.core.config import settings
 
-load_dotenv()
-
-# Access variables from the .env file
-# CANDIDATE_CV_FILE = os.getenv('CANDIDATE_CV_FILE_DIR')
-# CANDIDATE_JD_FILE = os.getenv('CANDIDATE_JD_FILE_DIR')
-# HR_CV_FILE = os.getenv('HR_CV_FILE_DIR')
-# HR_JD_FILE = os.getenv('HR_JD_FILE_DIR')
-
-CANDIDATE_CV_FILE = "./uploads/candidate/cv/"
-CANDIDATE_JD_FILE = "./uploads/candidate/jd/"
-HR_CV_FILE = "./uploads/hr/cv/"
-HR_JD_FILE = "./uploads/hr/jd/"
-
-
+CANDIDATE_CV_FILE = settings.CANDIDATE_CV_PATH
+CANDIDATE_JD_FILE = settings.CANDIDATE_JD_PATH
+HR_CV_FILE = settings.HR_CV_PATH
+HR_JD_FILE = settings.HR_JD_PATH
 
 # Make sure folders exist
 os.makedirs(CANDIDATE_CV_FILE, exist_ok=True)

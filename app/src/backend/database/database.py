@@ -1,17 +1,16 @@
-import os
-import sys
-import pymysql # Change this
+import pymysql 
 
-# When running this module directly, Python's import path may not include
-# the project's `app/src` directory so `backend` cannot be resolved.
-# Add the `app/src` directory (three levels up from this file) to sys.path
-# so `from backend.core.config import settings` works both when running
-# as a script and when used as a package.
-_ROOT_SRC = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-if _ROOT_SRC not in sys.path:
-    sys.path.insert(0, _ROOT_SRC)
-
-from backend.core.config import settings
+# Ensure `backend.core.config` is imported so the centralized sys.path
+# bootstrap (in that module) runs in package contexts. Keep a small
+# fallback for direct script runs.
+try:
+    from backend.core.config import settings
+except Exception:
+    import os, sys
+    _ROOT_SRC = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    if _ROOT_SRC not in sys.path:
+        sys.path.insert(0, _ROOT_SRC)
+    from backend.core.config import settings
 
 def init_db():
     try:

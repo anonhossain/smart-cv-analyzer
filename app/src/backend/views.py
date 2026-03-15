@@ -8,10 +8,10 @@ from user_controller import UserController
 from dbhelper import DBHelper
 from model import LoginRequest, RegisterRequest, UserOut, UserUpdate
 from gemini import Gemini, GeminiHR, HR_question_generator
-from emailsender import EmailSender
+from app.src.backend.services.emailsender import EmailSender
 from resume_extractor import ResumeExtractor
 from clear_files import clear_all_uploads
-from file_uploader import save_candidate_files, save_hr_files
+from app.src.backend.services.file_uploader import save_candidate_files, save_hr_files
 from urllib.parse import unquote
 
 api = APIRouter(prefix="/api")
