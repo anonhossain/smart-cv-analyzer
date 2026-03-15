@@ -1,3 +1,4 @@
+from app.src.backend.database.database import get_db_connection
 from mysql.connector import Error
 from fastapi import HTTPException
 import mysql.connector
@@ -6,13 +7,9 @@ import mysql.connector
 
 class DBHelper:
     def __init__(self):
-        self.conn = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="",
-            database="smart_resume_analyzer"
-        )
-        self.mycursor = self.conn.cursor(dictionary=True)
+        self.conn = get_db_connection()
+        if self.conn:
+            self.mycursor = self.conn.cursor(dictionary=True)
 
     def register_user(self, first_name, last_name, username, phone, email, password, role):
         try:
@@ -22,7 +19,7 @@ class DBHelper:
                 VALUES (%s, %s, %s, %s, %s, %s, %s)
             """, (first_name, last_name, username, phone, email, password, role))
 
-            self.conn.commit()  # 🔑 Very important: saves the data
+            self.conn.commit()  # Very important: saves the data
             user_id = cursor.lastrowid  # get the new user ID
             cursor.close()
             return user_id
