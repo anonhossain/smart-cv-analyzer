@@ -1,202 +1,130 @@
 import os
-import re
-import PyPDF2 as pdf
 import pdfplumber
-import docx
-from dotenv import load_dotenv
-import fitz
 import google.generativeai as genai
-import pdfplumber
-import csv
-from PyPDF2 import PdfReader
 from docx import Document
-from docx2pdf import convert
-import shutil
-import csv
+from dotenv import load_dotenv
+from backend.core.config import settings
 from prompt import candidate_match_prompt, generate_questions_prompt, hr_match_prompt
 
-# Set up Google API key and configure Generative AI
+# Configuration
 load_dotenv()
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
-#----------------------------------------------------------------
-#GEMINI FOR CANDIDATE
-#----------------------------------------------------------------
-
-import os
-
-class Gemini:
-    MODEL = os.getenv("MODEL")
-
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # backend/
-    CANDIDATE_CV_FILE = os.path.join(BASE_DIR, "..", "uploads", "candidate", "cv", "resume.pdf")
-    CANDIDATE_JD_FILE = os.path.join(BASE_DIR, "..", "uploads", "candidate", "jd", "jd.txt")
-
+class BaseAI:
+    """Shared AI utilities to avoid redundancy."""
     @staticmethod
     def get_gemini_response(prompt):
-        model = genai.GenerativeModel(Gemini.MODEL)
+        model = genai.GenerativeModel(os.getenv("MODEL"))
         response = model.generate_content(prompt)
         return response.text
 
     @staticmethod
-    def extract_text_from_pdf(resume_file_path):
-        """Extract text from the uploaded PDF resume."""
-        with open(resume_file_path, 'rb') as file:
-            reader = pdf.PdfReader(file)
-            text = ""
-            for page in range(len(reader.pages)):
-                page_text = reader.pages[page].extract_text()
-                text += str(page_text)
-        return text
+    def extract_text_with_pdfplumber(file_path):
+        """Unified PDF extraction logic."""
+        with pdfplumber.open(file_path) as pdf:
+            return "".join(page.extract_text() or "" for page in pdf.pages)
 
     @staticmethod
-    def load_job_description(job_description_file_path):
-        """Load job description from the text file."""
-        with open(job_description_file_path, 'r') as file:
+    def load_text_file(file_path):
+        with open(file_path, 'r', encoding='utf-8') as file:
             return file.read()
 
-    @staticmethod
-    def process_resume():
-        job_desc = Gemini.load_job_description(Gemini.CANDIDATE_JD_FILE)
-        resume_text = Gemini.extract_text_from_pdf(Gemini.CANDIDATE_CV_FILE)
+#----------------------------------------------------------------
+# REGULAR CANDIDATE ORCHESTRATOR
+#----------------------------------------------------------------
 
-        prompt = candidate_match_prompt(job_desc, resume_text)
-        response_text = Gemini.get_gemini_response(prompt)
-        return response_text
+class RegularCandidate:
+    def __init__(self):
+        self.cv_path = settings.CANDIDATE_CV_PATH
+        self.jd_path = settings.CANDIDATE_JD_PATH
 
+    def extract_data(self):
+        self.resume_text = BaseAI.extract_text_with_pdfplumber(self.cv_path)
+        self.job_desc = BaseAI.load_text_file(self.jd_path)
 
-class GeminiHR:
-    # HR_CV_FILE = os.getenv('HR_CV_FILE')  # Directory where the HR CVs are stored
-    # HR_JD_FILE = os.getenv('HR_JD_FILE')  # Path to the HR job description text file
+    def get_analysis(self):
+        prompt = candidate_match_prompt(self.job_desc, self.resume_text)
+        self.result = BaseAI.get_gemini_response(prompt)
 
-    # HR_CV_FILE="..\\uploads\\hr\\cv\\"
-    # HR_JD_FILE="..\\uploads\\hr\\jd\\jd.txt"
+    def run_RegularCandidate(self):
+        """Orchestration Pattern: Execute all steps."""
+        self.extract_data()
+        self.get_analysis()
+        return self.result
 
-    MODEL = os.getenv("MODEL")
-    
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # backend/
+#----------------------------------------------------------------
+# HR RANKER ORCHESTRATOR
+#----------------------------------------------------------------
 
-    OUTPUT_DIRECTORY = os.path.join(BASE_DIR, "..", "output", "hr_questions")
-    HR_CV_FILE = os.path.join(BASE_DIR, "..", "uploads", "hr", "cv")
-    HR_JD_FILE = os.path.join(BASE_DIR, "..", "uploads", "hr", "jd", "jd.txt")
+class HRPersonRanker:
+    def __init__(self):
+        self.cv_dir = settings.HR_CV_DIR
+        self.jd_path = settings.HR_JD_DIR
 
+    def extract_jd(self):
+        self.job_desc = BaseAI.load_text_file(self.jd_path)
 
-    @staticmethod
-    def get_gemini_response(prompt):
-        """Get response from Gemini AI."""
-        model = genai.GenerativeModel(GeminiHR.MODEL)
-        response = model.generate_content(prompt)
-        return response.text
-
-    @staticmethod
-    def extract_pdf_text(file_path):
-        """Extract text from PDF file."""
-        with pdfplumber.open(file_path) as pdf:
-            return "".join(page.extract_text() for page in pdf.pages)
-
-    @staticmethod
-    def extract_docx_text(file_path):
-        """Extract text from DOCX file."""
-        doc = docx.Document(file_path)
-        return "\n".join([paragraph.text for paragraph in doc.paragraphs])
-    
-    @staticmethod
-    def process_resume():
-        """Process the resumes based on the user's selected action."""
-        
-        job_desc = Gemini.load_job_description(GeminiHR.HR_JD_FILE)
-
-        pdf_files = [
-            file for file in os.listdir(GeminiHR.HR_CV_FILE)
-            if file.lower().endswith('.pdf')
-        ]
-
-        percentage_mapping = {}
+    def process_bulk_ranking(self):
+        pdf_files = [f for f in os.listdir(self.cv_dir) if f.lower().endswith('.pdf')]
+        self.rankings = {}
 
         for pdf_file in pdf_files:
-            pdf_path = os.path.join(GeminiHR.HR_CV_FILE, pdf_file)
-
-            resume_text = Gemini.extract_text_from_pdf(pdf_path)
-            prompt = hr_match_prompt(job_desc, resume_text)
-            response = Gemini.get_gemini_response(prompt).strip()
-
-            try:
-                percentage = int(response.replace("\n", "").strip())
-            except ValueError:
-                percentage = 0 
+            path = os.path.join(self.cv_dir, pdf_file)
+            resume_text = BaseAI.extract_text_with_pdfplumber(path)
+            prompt = hr_match_prompt(self.job_desc, resume_text)
             
-            percentage_mapping[pdf_file] = percentage
-        percentage_mapping = dict(sorted(percentage_mapping.items(), key=lambda item: item[1], reverse=True))
-        return percentage_mapping
+            response = BaseAI.get_gemini_response(prompt).strip()
+            # Extract digits only for robust scoring
+            score = "".join(filter(str.isdigit, response))
+            self.rankings[pdf_file] = int(score) if score else 0
+        
+        self.rankings = dict(sorted(self.rankings.items(), key=lambda x: x[1], reverse=True))
+
+    def run_HRPersonRanker(self):
+        """Orchestration Pattern: Execute all steps."""
+        self.extract_jd()
+        self.process_bulk_ranking()
+        return self.rankings
 
 #----------------------------------------------------------------
-# Generate questions based on resumes and job description
+# HR QUESTION GENERATOR ORCHESTRATOR
 #----------------------------------------------------------------
 
-class HR_question_generator:
-    # HR_CV_FILE = os.getenv('HR_CV_FILE')  # Directory where the HR CVs are stored
-    # HR_JD_FILE = os.getenv('HR_JD_FILE')  # Path to the HR job description text file
-    #OUTPUT_DIR = os.getenv('OUTPUT_DIR')
-    MODEL = os.getenv("MODEL")
+class HRQuestionGenerator:
+    def __init__(self):
+        self.cv_dir = settings.HR_CV_DIR
+        self.jd_path = settings.HR_JD_DIR
+        self.output_dir = settings.OUTPUT_DIR
 
-    # OUTPUT_DIRECTORY= "..\\output\\hr_questions"
-    # HR_CV_FILE="..\\uploads\\hr\\cv\\"
-    # HR_JD_FILE="..\\uploads\\hr\\jd\\jd.txt"
+    def prepare_environment(self):
+        if not os.path.exists(self.output_dir):
+            os.makedirs(self.output_dir)
+        self.job_desc = BaseAI.load_text_file(self.jd_path)
 
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # backend/
-    OUTPUT_DIRECTORY = os.path.join(BASE_DIR, "..", "output", "hr_questions")
-    HR_CV_FILE = os.path.join(BASE_DIR, "..", "uploads", "hr", "cv")
-    HR_JD_FILE = os.path.join(BASE_DIR, "..", "uploads", "hr", "jd", "jd.txt")
+    def generate_and_save(self):
+        pdf_files = [f for f in os.listdir(self.cv_dir) if f.lower().endswith('.pdf')]
+        
+        for filename in pdf_files:
+            resume_path = os.path.join(self.cv_dir, filename)
+            resume_text = BaseAI.extract_text_with_pdfplumber(resume_path)
+            
+            prompt = generate_questions_prompt(self.job_desc, resume_text)
+            questions = BaseAI.get_gemini_response(prompt)
+            
+            self._save_as_docx(questions, filename)
 
-
-    @staticmethod
-    def get_gemini_response(prompt):
-        model = genai.GenerativeModel(HR_question_generator.MODEL)
-        response = model.generate_content(prompt)
-        return response.text
-
-    @staticmethod
-    def extract_text_from_pdf(path):
-        with open(path, 'rb') as file:
-            reader = pdf.PdfReader(file)
-            return ''.join([page.extract_text() for page in reader.pages if page.extract_text()])
-
-    @staticmethod
-    def load_job_description(path):
-        with open(path, 'r') as file:
-            return file.read()
-
-    @staticmethod
-    def save_text_as_pdf(text, output_path):
-        doc = fitz.open()
-        page = doc.new_page()
-        page.insert_text((72, 72), text, fontsize=12)
-        doc.save(output_path)
-        doc.close()
-
-    @staticmethod
-    def save_text_as_docx(text, output_path):
+    def _save_as_docx(self, text, original_name):
+        base_name = os.path.splitext(original_name)[0]
+        output_path = os.path.join(self.output_dir, f"{base_name}_questions.docx")
+        
         doc = Document()
+        doc.add_heading(f"Interview Questions - {base_name}", 0)
         for line in text.split('\n'):
             doc.add_paragraph(line)
         doc.save(output_path)
+        print(f"Generated: {output_path}")
 
-    @staticmethod
-    def process_resumes():
-        if not os.path.exists(HR_question_generator.OUTPUT_DIRECTORY):
-            os.makedirs(HR_question_generator.OUTPUT_DIRECTORY)
-
-        job_desc = HR_question_generator.load_job_description(HR_question_generator.HR_JD_FILE)
-
-        for filename in os.listdir(HR_question_generator.HR_CV_FILE):
-            if filename.lower().endswith('.pdf'):
-                resume_path = os.path.join(HR_question_generator.HR_CV_FILE, filename)
-                resume_text = HR_question_generator.extract_text_from_pdf(resume_path)
-                prompt = generate_questions_prompt(job_desc, resume_text)
-                questions = HR_question_generator.get_gemini_response(prompt)
-                # Create filenames
-                base_name = os.path.splitext(filename)[0]
-                docx_output_path = os.path.join(HR_question_generator.OUTPUT_DIRECTORY, base_name + "_questions.docx")
-                # Save both versions
-                HR_question_generator.save_text_as_docx(questions, docx_output_path)
-                print(f"Generated: {base_name}questions.docx")
+    def run_HRQuestionGenerator(self):
+        """Orchestration Pattern: Execute all steps."""
+        self.prepare_environment()
+        self.generate_and_save()
